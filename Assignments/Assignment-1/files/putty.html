@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Using PuTTY as a Serial Port Emulator</title>
+<style>
+    body { 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        color: #333333; 
+        background-color: #f4f4f4; 
+        line-height: 1.6; 
+        padding: 20px; 
+    }
+    h1 { 
+        color: #4a4a4a; 
+        font-size: 24px; 
+    }
+    h2 { 
+        color: #5a5a5a; 
+        font-size: 20px; 
+    }
+    p, li { 
+        font-size: 16px; 
+    }
+    a {
+        color: #1a0dab;
+    }
+    ol {
+        padding-left: 20px;
+    }
+</style>
+</head>
+<body>
+    <h1>Using PuTTY as a Serial Port Emulator</h1>
+    <p>PuTTY is a popular, versatile, open-source software tool used primarily for network administration. It acts as a terminal emulator, facilitating connections over various protocols including SSH, Telnet, and Serial, making it highly useful for managing servers, networking equipment, and embedded systems.</p>
+
+    <h2>Steps to Use PuTTY for Serial Communication</h2>
+    <ol>
+        <li><strong>Download and Install PuTTY</strong>: Download PuTTY from its <a href='https://www.putty.org/'>official website</a> for your operating system. It is most commonly used on Windows.</li>
+        <li><strong>Identify Your Device's COM Port</strong>: For Windows, check the Device Manager under "Ports (COM & LPT)" to find the COM port (like COM3 or COM4). For Linux and macOS, it's typically in /dev/ (like /dev/ttyUSB0).</li>
+        <li><strong>Configure PuTTY for Serial Communication</strong>: Open PuTTY, select 'Serial' under 'Connection type', enter the identified COM port in 'Serial line', specify the baud rate in 'Speed', and click 'Open'.</li>
+        <li><strong>Communicate with Your Device</strong>: You'll see a terminal window where you can view data from your device or type commands/data to interact with it.</li>
+    </ol>
+
+    <h2>Troubleshooting Tips</h2>
+    <p>If you're not seeing any data, ensure you've selected the correct COM port and baud rate, and that your device is properly connected and powered on. Some devices also require specific settings for data bits, stop bits, parity, and flow control.</p>
+    <p><strong>Note</strong>: Sometimes, when you disconnect and reconnect the USB serial port while PuTTY is running, it may require a reset. In such cases, simply quit and restart PuTTY.</p>
+</body>
+</html>
