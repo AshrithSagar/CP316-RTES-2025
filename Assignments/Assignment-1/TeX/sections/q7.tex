@@ -1,6 +1,11 @@
 \section*{Question 7}
 
-What does \texttt{crt\_init} function do in \texttt{startup.c}?
+What does \texttt{crt\_init} function do in \texttt{startup.c}? \\
 How is it related to the linker command file?
 
 \subsection*{Solution}
+
+The \texttt{crt\_init} function is defined in the \texttt{startup.c} file, which is called during the program startup.
+It zero-initializes the \texttt{.bss} section, which contains the uninitialized variables.
+The linker command file (\texttt{bare.ld}) defines the memory layout of the program, including the location of the \texttt{.bss} section in RAM, where symbols have been definied to mark locations in the section.
+The \texttt{crt\_init} function uses these symbols to determine the start and end addresses of the \texttt{.bss} section and initializes it to zero during the program startup.
