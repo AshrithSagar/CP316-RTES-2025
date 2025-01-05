@@ -5,3 +5,20 @@ What is its size?
 In which file is it reserved?
 
 \subsection*{Solution}
+
+The stack is used for various purposes, such as storing local variables, function arguments, return addresses, and other temporary data.
+The stack size is defined in the \texttt{startup.c} file, in the following line:
+\begin{verbatim}
+#define STACK_SIZE  8192
+\end{verbatim}
+The stack is reserved in the \texttt{bare.ld} file, as shown below:
+\begin{verbatim}
+.stack :
+{
+    . = ALIGN(8);   /* initial sp should be 8-byte aligned */
+    __stack_start_ = .;
+    *(.stack*)
+    __stack_end_ = .;
+} > SRAM
+\end{verbatim}
+The stack is placed at the end of the RAM memory, with a size of 8192.
