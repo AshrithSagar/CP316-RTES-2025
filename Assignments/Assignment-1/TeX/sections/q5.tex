@@ -4,3 +4,32 @@ Where are \texttt{.text}, \texttt{.rodata}, \texttt{.data} and \texttt{.bss} sec
 Why?
 
 \subsection*{Solution}
+
+In \texttt{bare.ld} file defines where the sections need to be placed in the memory, as shown below:
+\begin{table}[h]
+    \centering
+    \begin{tabular}{p{2cm} p{2cm} p{10cm}} \toprule
+        \textbf{Section}  &
+        \textbf{Location} &
+        \textbf{Reason}
+        \\ \midrule
+        \texttt{.text}    &
+        Flash             &
+        The \texttt{.text} section contains the executable machine code (the program instructions), which typically doesn't change during runtime.
+        \\
+        \texttt{.rodata}  &
+        Flash             &
+        The \texttt{.rodata} section contains the read-only data, which typically doesn't change during runtime.
+        \\
+        \texttt{.data}    &
+        RAM               &
+        The \texttt{.data} section contains the variables that are initialized, which can be modified during runtime.
+        \\
+        \texttt{.bss}     &
+        RAM               &
+        The \texttt{.bss} section contains the uninitialized variables, which can change during runtime.
+        It is zero-initialized during the program startup by the \texttt{crt\_init\@()} function.
+        \\ \bottomrule
+    \end{tabular}
+    \caption{Location of sections in memory}
+\end{table}
