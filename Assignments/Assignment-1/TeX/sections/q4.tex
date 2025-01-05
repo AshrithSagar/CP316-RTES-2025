@@ -4,3 +4,14 @@ Look at \texttt{bare.ld} file.
 What are the sizes of flash and RAM on the chip?
 
 \subsection*{Solution}
+
+The part in \texttt{bare.ld} file that specifies the sizes of flash and RAM on the chip is as follows:
+\begin{verbatim}
+MEMORY
+{
+    FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 0x00080000
+    SRAM (rwx) : ORIGIN = 0x20000000, LENGTH = 0x00020000
+}
+\end{verbatim}
+The \underline{size of the flash} is \hex{0x00080000} bytes, i.e., \(8\times 16^4 = 524288\) bytes \(\approx \boxed{\texttt{524 kB}}\).\\
+The \underline{size of the RAM} is \hex{0x00020000} bytes, i.e., \(2\times 16^4 = 131072\) bytes \(\approx \boxed{\texttt{128 kB}}\).
