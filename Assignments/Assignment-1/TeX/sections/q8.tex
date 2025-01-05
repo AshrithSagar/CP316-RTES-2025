@@ -4,3 +4,7 @@ What is a vector table?
 In which file would you find it?
 
 \subsection*{Solution}
+
+A vector table is a table of function pointers that contains the addresses of the various exception and interrupt service routines.
+Upon an exception or interrupt, the microcontroller jumps to the corresponding address in the vector table to execute the appropriate handler.
+The vector table is present in the startup file \texttt{startup.c}.
