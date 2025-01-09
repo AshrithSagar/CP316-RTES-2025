@@ -25,7 +25,7 @@ Install the following tools (using `sudo apt install` in case of Ubuntu):
 ### Step 2
 
 Install GCC ARM toolchain for AArch32 bare-metal target (arm-none-eabi).
-Download from https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads
+Download from <https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads>
 
 - For x86_64 Linux (WSL, Vbox or Linux OS): `arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi.tar.xz`
 - For macOS (x86_64): `arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi.pkg`
@@ -37,21 +37,21 @@ Untar in an appropriate directory (`/usr/local` or `/opt` – I have used `/opt`
 Use bash terminal and type the following commands:
 
 ```bash
-$ cd /opt
-$ sudo tar xvf <path-to-downloaded-file.tar.xz>
+cd /opt
+sudo tar xvf <path-to-downloaded-file.tar.xz>
 ```
 
 You may create a short-cut to the installed toolchain directory:
 
 ```bash
-$ cd /opt
-$ sudo ln -s arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi arm-gcc
+cd /opt
+sudo ln -s arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi arm-gcc
 ```
 
 Note: Ubuntu also provides installation of GNU ARM tool-chain using apt:
 
 ```bash
-$ sudo apt install gcc-arm-none-eabi
+sudo apt install gcc-arm-none-eabi
 ```
 
 `apt` installs the tool-chain in `/usr` along with the rest of the Linux programs.
@@ -78,7 +78,7 @@ This example contains the following files:
 Build the program by running the script:
 
 ```bash
-$ ./build.sh
+./build.sh
 ```
 
 The script generates `tiny.hex`, which should be dragged and dropped onto MICROBIT drive.
