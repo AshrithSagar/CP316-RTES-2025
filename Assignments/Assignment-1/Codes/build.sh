@@ -1,7 +1,12 @@
-# Toolchain installed using homebrew; PATH is taken care
+# Toolchain installed using homebrew; $PATH is taken care
 
 # ARM architecture specific compiler flags
 CFLAGS="-mcpu=cortex-m4 -mthumb -mabi=aapcs -mfloat-abi=hard -mfpu=fpv4-sp-d16"
+# -mcpu=cortex-m4: Target CPU architecture
+# -mthumb: Thumb instruction set
+# -mabi=aapcs: Uses the ARM Architecture Procedure Call Standard (AAPCS) for the application binary interface
+# -mfloat-abi=hard: Uses hardware floating-point instructions
+# -mfpu=fpv4-sp-d16: Specifies the floating-point unit as FPv4 with single-precision and 16 registers
 
 # Compile the source files
 echo Compiling startup.c
@@ -15,8 +20,7 @@ arm-none-eabi-gcc -c $CFLAGS uart.c
 
 # Link the object code to form exectuable program
 echo Linking
-arm-none-eabi-ld -T bare.ld -Map tiny.map \
-        startup.o system.o main.o uart.o -o tiny.out \
+arm-none-eabi-ld -T bare.ld -Map tiny.map startup.o system.o main.o uart.o -o tiny.out
 
 # Check sizes
 arm-none-eabi-size tiny.out
