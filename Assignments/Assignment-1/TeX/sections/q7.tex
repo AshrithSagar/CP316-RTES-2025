@@ -7,5 +7,5 @@ How is it related to the linker command file?
 
 The \texttt{crt\_init} function is defined in the \texttt{startup.c} file, which is called during the program startup.
 It zero-initializes the \texttt{.bss} section, which contains the uninitialized variables.
-The linker command file (\texttt{bare.ld}) defines the memory layout of the program, including the location of the \texttt{.bss} section in RAM, where symbols have been defined to mark locations in the section, namely \texttt{\_\_data\_load\_\_}, \texttt{\_\_data\_start\_\_}, \texttt{\_\_bss\_start\_\_}, and \texttt{\_\_bss\_end\_\_}.
+The linker command file (\texttt{bare.ld}) defines the memory layout of the program, including the location of the \texttt{.bss} section in RAM, where symbols have been defined to mark locations in the section, namely \texttt{\char`_\char`_data\_load\char`_\char`_}, \texttt{\char`_\char`_data\_start\char`_\char`_}, \texttt{\char`_\char`_bss\_start\char`_\char`_}, and \texttt{\char`_\char`_bss\_end\char`_\char`_}.
 The \texttt{crt\_init} function uses these symbols to determine the start and end addresses of the \texttt{.bss} section and initializes it to zero during the program startup.
