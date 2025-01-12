@@ -12,4 +12,4 @@ void led_blink(int r, int c);
 // n = button ID, 0 for button A, 1 for button B
 extern int button_get(int n);
 
-#endif  /* LEDBTN_H */
+#endif /* LEDBTN_H */

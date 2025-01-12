@@ -4,8 +4,8 @@ export PATH=$PATH:/opt/arm-gcc/bin
 # ARM architecture specific compiler flags
 CFLAGS="-O3 -mcpu=cortex-m4 -mthumb -mabi=aapcs -mfloat-abi=hard -mfpu=fpv4-sp-d16"
 LIBS="/opt/arm-gcc/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libm.a \
-     /opt/arm-gcc/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a \
-     /opt/arm-gcc/lib/gcc/arm-none-eabi/14.2.1/thumb/v7e-m+fp/hard/libgcc.a"
+/opt/arm-gcc/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a \
+/opt/arm-gcc/lib/gcc/arm-none-eabi/14.2.1/thumb/v7e-m+fp/hard/libgcc.a"
 
 # Compile the source files
 echo Compiling startup.c
@@ -31,7 +31,7 @@ arm-none-eabi-gcc -c $CFLAGS timer.c
 # Link the object code to form exectuable program
 echo Linking
 arm-none-eabi-ld -T bare.ld -Map tiny.map \
-    startup.o system.o main.o ledbtn.o uart.o printf.o timer.o $LIBS -o tiny.out
+startup.o system.o main.o ledbtn.o uart.o printf.o timer.o $LIBS -o tiny.out
 
 # Check sizes
 arm-none-eabi-size tiny.out
