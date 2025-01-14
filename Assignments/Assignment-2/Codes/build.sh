@@ -1,5 +1,4 @@
-# Path to tool-chain
-export PATH=$PATH:/opt/arm-gcc/bin
+# Toolchain installed using homebrew; $PATH is taken care
 
 # ARM architecture specific compiler flags
 CFLAGS="-O3 -mcpu=cortex-m4 -mthumb -mabi=aapcs -mfloat-abi=hard -mfpu=fpv4-sp-d16"
@@ -38,20 +37,9 @@ arm-none-eabi-size tiny.out
 
 # Generate HEX file to load on the target
 echo Generating hex
-arm-none-eabi-objcopy -O ihex tiny.out tiny.hex     # takes out binary code, converts into hex (ASCII)
+arm-none-eabi-objcopy -O ihex tiny.out tiny.hex
+# Takes out binary code, converts into hex (ASCII)
 
 # Upload on the target
-# cmd.exe /c copy 'tiny.hex' E:
-
-# If you're working in a WSL directory not visible to Windows, you
-# will have to copy tiny.hex via some Windows folfer. For example:
-
 echo Flashing
-sudo mkdir -p /mnt/m    # create if doesn't exist
-sudo mount -t drvfs E: /mnt/m
-sudo /bin/cp tiny.hex /mnt/m
-
-# The above command is applicable for a Windows PC. You may change it
-# appropriately to on Linux or MacOS. It should be something like:
-# cp tiny.hex /media/MICROBIT       # linux
-# cp tiny.hex /Volumes/MICROBIT     # mac
+cp tiny.hex /Volumes/MICROBIT
