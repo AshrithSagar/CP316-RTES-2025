@@ -30,4 +30,5 @@ echo Generating hex
 arm-none-eabi-objcopy -O ihex tiny.out tiny.hex
 
 # Upload on the target
+echo Flashing
 cp tiny.hex /Volumes/MICROBIT
