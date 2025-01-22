@@ -31,4 +31,8 @@ arm-none-eabi-objcopy -O ihex tiny.out tiny.hex
 
 # Upload on the target
 echo Flashing
-cp tiny.hex /Volumes/MICROBIT
+FLASHDIR="/Volumes/MICROBIT"
+mkdir -p "$FLASHDIR"
+diskutil unmount "$1"
+sudo mount -t msdos "$1" "$FLASHDIR"
+cp tiny.hex "$FLASHDIR"
