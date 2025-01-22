@@ -30,6 +30,9 @@ echo Generating hex
 arm-none-eabi-objcopy -O ihex tiny.out tiny.hex
 
 # Upload on the target
+# Check with `df -ahY` to see the mounted devices,
+# and pass the correct one as argument while running
+# Eg: `sudo ./build.sh /dev/disk6`
 echo Flashing
 FLASHDIR="/Volumes/MICROBIT"
 mkdir -p "$FLASHDIR"
