@@ -23,22 +23,22 @@ arm-none-eabi-gcc -c -mcpu=cortex-m4 -mthumb -mabi=aapcs -mfloat-abi=hard -mfpu=
 echo Generating libbsp.a
 /bin/rm -f libbsp.a
 arm-none-eabi-ar -r libbsp.a \
-    gpio.o \
-    ledbtn.o \
-    uart.o \
-    printf.o \
-    pwm.o \
-    audio.o \
-    timer.o \
-    bsp.o
+gpio.o \
+ledbtn.o \
+uart.o \
+printf.o \
+pwm.o \
+audio.o \
+timer.o \
+bsp.o
 
 # We can remove the object files now
 /bin/rm \
-    gpio.o \
-    ledbtn.o \
-    uart.o \
-    printf.o \
-    pwm.o \
-    audio.o \
-    timer.o \
-    bsp.o
+gpio.o \
+ledbtn.o \
+uart.o \
+printf.o \
+pwm.o \
+audio.o \
+timer.o \
+bsp.o

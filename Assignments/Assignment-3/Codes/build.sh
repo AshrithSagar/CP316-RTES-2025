@@ -18,11 +18,11 @@ arm-none-eabi-gcc -c $CFLAGS main.c
 # Link the object code to form exectuable program
 echo Linking MICROBIT.out
 arm-none-eabi-ld -T nrf52833.ld -Map system.map --entry Reset_Handler \
-        startup.o system.o main.o bsp/libbsp.a \
-        $ARMGCC/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libm.a \
-        $ARMGCC/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a \
-        $ARMGCC/lib/gcc/arm-none-eabi/14.2.1/thumb/v7e-m+fp/hard/libgcc.a \
-        -o MICROBIT.out
+startup.o system.o main.o bsp/libbsp.a \
+$ARMGCC/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libm.a \
+$ARMGCC/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a \
+$ARMGCC/lib/gcc/arm-none-eabi/14.2.1/thumb/v7e-m+fp/hard/libgcc.a \
+-o MICROBIT.out
 
 # Check sizes
 arm-none-eabi-size MICROBIT.out

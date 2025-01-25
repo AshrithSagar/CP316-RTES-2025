@@ -5,8 +5,8 @@
 extern "C" {
 #endif
 
-#include <stdint.h>
 #include "microbit.h"
+#include <stdint.h>
 
 /* LED */
 void leds_init(void);
