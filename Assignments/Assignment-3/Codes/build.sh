@@ -1,7 +1,3 @@
-# Path to tool-chain
-ARMGCC=/opt/arm-gcc
-export PATH=$PATH:$ARMGCC/bin
-
 # ARM architecture specific compiler flags
 CFLAGS="-Ibsp -mcpu=cortex-m4 -mthumb -mabi=aapcs -mfloat-abi=hard -mfpu=fpv4-sp-d16"
 
