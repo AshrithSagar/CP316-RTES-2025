@@ -41,5 +41,12 @@ arm-none-eabi-objcopy -O ihex tiny.out tiny.hex
 # Takes out binary code, converts into hex (ASCII)
 
 # Upload on the target
+# Check with `df -ahY` to see the mounted devices,
+# and pass the correct one as argument while running
+# Eg: `sudo ./build.sh /dev/disk6`
 echo Flashing
-cp tiny.hex /Volumes/MICROBIT
+FLASHDIR="/Volumes/MICROBIT"
+mkdir -p "$FLASHDIR"
+diskutil unmount "$1"
+sudo mount -t msdos "$1" "$FLASHDIR"
+cp tiny.hex "$FLASHDIR"
