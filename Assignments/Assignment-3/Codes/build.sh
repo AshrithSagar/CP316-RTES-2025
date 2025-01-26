@@ -27,12 +27,18 @@ arm-none-eabi-size MICROBIT.out
 arm-none-eabi-objcopy -O ihex MICROBIT.out MICROBIT.hex
 
 # Upload on the target
-echo Flashing
-sudo mkdir -p /mnt/MICROBIT             # create if doesn't exist
-sudo mount -t drvfs E: /mnt/MICROBIT
-sudo /bin/cp MICROBIT.hex /mnt/MICROBIT
+# echo Flashing
+# sudo mkdir -p /mnt/MICROBIT
+# sudo mount -t drvfs E: /mnt/MICROBIT
+# sudo /bin/cp MICROBIT.hex /mnt/MICROBIT
 
-# The above command is applicable for a Windows PC. You may change it
-# appropriately to on Linux or MacOS. It should be something like:
-# cp MICROBIT.hex /media/MICROBIT       # linux
-# cp MICROBIT.hex /Volumes/MICROBIT     # mac
+# Upload on the target
+# Check with `df -ahY` to see the mounted devices,
+# and pass the correct one as argument while running
+# Eg: `sudo ./build.sh /dev/disk6`
+echo Flashing
+FLASHDIR="/Volumes/MICROBIT"
+mkdir -p "$FLASHDIR"
+diskutil unmount "$1"
+sudo mount -t msdos "$1" "$FLASHDIR"
+cp tiny.hex "$FLASHDIR"
