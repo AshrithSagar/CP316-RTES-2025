@@ -1,3 +1,5 @@
+# Toolchain installed using homebrew; $PATH is taken care
+
 # ARM architecture specific compiler flags
 CFLAGS="-Ibsp -mcpu=cortex-m4 -mthumb -mabi=aapcs -mfloat-abi=hard -mfpu=fpv4-sp-d16"
 
