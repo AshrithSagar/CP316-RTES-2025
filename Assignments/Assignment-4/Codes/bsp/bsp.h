@@ -10,7 +10,6 @@
 #include "timer.h"
 #include "uart.h"
 
-
 void bsp_init(void);
 
 #endif /* BSP_H */
