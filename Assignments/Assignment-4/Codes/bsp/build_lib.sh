@@ -1,5 +1,4 @@
-# Path to tool-chain
-export PATH=$PATH:/opt/arm-gcc
+# Toolchain installed using homebrew; $PATH is taken care
 
 # Compile the source files
 echo Compiling gpio.c
