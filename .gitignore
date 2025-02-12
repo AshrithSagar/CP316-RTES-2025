@@ -1,4 +1,4 @@
-## C
+### C
 
 # Prerequisites
 *.d
@@ -53,7 +53,7 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-## TeX
+### TeX
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
@@ -362,7 +362,8 @@ TSWLatexianTemp*
 # Uncomment the next line to have this generated file ignored.
 #*Notes.bib
 
-##
-.vscode/
+###
 **.pdf
+mermaid-filter.err
+.vscode/
 **/TODO.md
