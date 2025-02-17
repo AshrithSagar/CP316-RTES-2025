@@ -8,6 +8,10 @@ CFLAGS="-mcpu=cortex-m4 -mthumb -mabi=aapcs -mfloat-abi=hard -mfpu=fpv4-sp-d16"
 # -mfloat-abi=hard: Uses hardware floating-point instructions
 # -mfpu=fpv4-sp-d16: Specifies the floating-point unit as FPv4 with single-precision and 16 registers
 
+# Preprocess main.c
+CC=arm-none-eabi-gcc
+$CC -E $CFLAGS main.c > main.i
+
 # Compile the source files
 echo Compiling startup.c
 arm-none-eabi-gcc -c $CFLAGS startup.c

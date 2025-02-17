@@ -15,9 +15,9 @@ $CC -E $CFLAGS main.c > main.i
 \subsection*{Solution}
 
 The `\texttt{-E}` option indicates to just return the preprocessed source before the actual compilation.
-This preprocessed source is redirected to streo in the file \texttt{main.i}.
+This preprocessed source is redirected to be stored in the file \texttt{main.i}.
 The contents of this \texttt{main.i} file are very similar to the file \texttt{main.c} but with all the preprocessor directives expanded, the comments removed, and the macros replaced with their definitions.
-The number of lines in the \texttt{main.i} file is 52.
+The number of lines in the \texttt{main.i} file is 164, which is much greater than the same in the \texttt{main.c} file, which has 33 lines.
 
 The keyword \texttt{static} in C is used to declare a function or a variable that is only visible to the file in which it is declared.
 The keyword \texttt{inline} is used to suggest the compiler to insert the code of the function in place of the function call, i.e., to perform an inline substitution of the function call.
