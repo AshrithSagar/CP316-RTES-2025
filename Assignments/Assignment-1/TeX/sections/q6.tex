@@ -3,4 +3,28 @@
 What are the start and end addresses of these sections?
 See in \texttt{tiny.map}.
 
+\vspace*{-1em}
 \subsection*{Solution}
+
+The start and end addresses of the sections are given in Table~\ref{tab:address}.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{ccc} \toprule
+        Section          & Start Address    & End Address
+        \\ \midrule
+        \texttt{.text}   & \hex{0x00000000} & \hex{0x00000584}
+        \\
+        \texttt{.rodata} & \hex{0x0000055c} & \hex{0x00000584}
+        \\
+        \texttt{.data}   & \hex{0x20000000} & \hex{0x20000004}
+        \\
+        \texttt{.bss}    & \hex{0x20000004} & \hex{0x20000008}
+        \\
+        \texttt{.stack}  & \hex{0x20000008} & \hex{0x20002008}
+        \\ \bottomrule
+    \end{tabular}
+    \caption{
+        (Q6) Addresses of the sections, as seen from the \texttt{tiny.map} file.
+    }\label{tab:address}
+\end{table}
