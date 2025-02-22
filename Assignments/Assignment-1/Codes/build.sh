@@ -1,5 +1,12 @@
 # Toolchain installed using homebrew; $PATH is taken care
 
+# Usage: ./build.sh /dev/diskX
+# args: mount point
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <mount-point>"
+    exit 1
+fi
+
 # ARM architecture specific compiler flags
 CFLAGS="-mcpu=cortex-m4 -mthumb -mabi=aapcs -mfloat-abi=hard -mfpu=fpv4-sp-d16"
 # -mcpu=cortex-m4: Target CPU architecture
