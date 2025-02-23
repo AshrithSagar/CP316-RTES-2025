@@ -40,3 +40,43 @@ This contrasts with FreeRTOS, which, while extremely popular and highly flexible
 In terms of design philosophy, FreeRTOS’s minimalistic design is incredibly effective for systems with strict resource constraints.
 Its simplicity translates to low overhead and ease of deployment on small microcontrollers.
 On the other hand, RTX5’s object-oriented approach introduces a level of abstraction that, while potentially incurring slightly higher overhead, benefits clarity, ease of maintenance, and scalability in larger/ complex projects.
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{p{3.6cm} p{6cm} p{6cm}}
+        \toprule
+        \textbf{Aspect}
+         &
+        \textbf{FreeRTOS kernel}
+         &
+        \textbf{RTX5 (CMSIS OS2)}
+        \\ \midrule
+        Multitasking
+         &
+        Tasks with static/ dynamic allocation
+         &
+        Threads as per CMSIS OS2, integrated with ARM
+        \\ \midrule
+        Scheduler
+         &
+        Tick-driven, priority-based preemption
+         &
+        Priority-based with time-slicing for equal priorities
+        \\ \midrule
+        Inter-task communication objects
+         &
+        Queues, semaphores, mutexes, event groups
+         &
+        Message/ mail queues, semaphores, mutexes, event flags
+        \\ \midrule
+        Interesting aspects
+         &
+        Minimalistic design, low overhead
+         &
+        Standardized API, object-oriented, portable
+        \\ \bottomrule
+    \end{tabular}
+    \caption{
+        Comparison of FreeRTOS and RTX5 (CMSIS OS2)
+    }\label{tab:comparison}
+\end{table}
