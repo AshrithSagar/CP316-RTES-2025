@@ -1,11 +1,35 @@
-\section*{FreeRTOS kernel}
+\section*{Kernels}
 
-\section*{RTX5 (CMSIS OS2)}
+\subsection*{FreeRTOS kernel}
+
+FreeRTOS is a lightweight, flexible RTOS prized for its minimalistic design and low overhead in resource-constrained systems.
+
+\subsection*{RTX5 (CMSIS OS2)}
+
+RTX5 (CMSIS OS2) is a standardized, object-oriented RTOS for ARM platforms that offers consistent multitasking and intertask communication, streamlining development and portability.
 
 \section*{Comparison}
 
 \subsection*{Multitasking}
 
+FreeRTOS implements multitasking through tasks that can be created with either static or dynamic memory allocation.
+RTX5 (CMSIS OS2) uses threads defined by the CMSIS OS2 standard, which supports priority-based preemption; it is tightly integrated into the ARM ecosystem, which can simplify portability.
+
 \subsection*{Scheduler}
 
+The FreeRTOS scheduler operates as a tick-driven, priority-based preemptive scheduler.
+The RTX5 scheduler is also priority-based with support for time-slicing among threads of equal priority.
+
 \subsection*{Inter-task communication objects}
+
+The FreeRTOS kernel provides a variety of inter-task communication objects, such as queues, semaphores, mutexes, and event groups.
+RTX5, on the other hand, provides similar inter-task communication objects, such as message queues, mail queues, semaphores, mutexes, and event flags.
+The RTX5 API is more object-oriented and standardized, which eases development and enforces consistency.
+
+\section*{Interesting aspects}
+
+In terms of standardization and portability, RTX5’s adherence to the CMSIS OS2 standard means that its API remains consistent across all ARM platforms.
+This contrasts with FreeRTOS, which, while extremely popular and highly flexible, can involve more platform-specific configuration.
+
+In terms of design philosophy, FreeRTOS is quite good for its minimalistic, low-overhead approach.
+On the other hand, RTX5’s object-oriented approach provides a more structured environment that aligns with modern software engineering practices. This design not only aids clarity but can also lead to easier maintenance and scalability in complex projects.
