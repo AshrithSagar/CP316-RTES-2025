@@ -11,3 +11,5 @@ For macOS, instead of `brew install arm-none-eabi-gcc`, use
 ```shell
 brew install --cask gcc-arm-embedded
 ```
+
+Or alternatively, download the toolchain from [ARM's website](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads).
