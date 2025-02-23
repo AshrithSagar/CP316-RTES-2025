@@ -1,11 +1,6 @@
 \section*{Kernels}
 
-\subsection*{FreeRTOS kernel}
-
-FreeRTOS is a lightweight, flexible RTOS prized for its minimalistic design and low overhead in resource-constrained systems.
-
-\subsection*{RTX5 (CMSIS OS2)}
-
+FreeRTOS kernel is a lightweight, flexible RTOS known for its minimalistic design and low overhead in resource-constrained systems.
 RTX5 (CMSIS OS2) is a standardized, object-oriented RTOS for ARM platforms that offers consistent multitasking and intertask communication, streamlining development and portability.
 
 \section*{Comparison}
@@ -13,13 +8,16 @@ RTX5 (CMSIS OS2) is a standardized, object-oriented RTOS for ARM platforms that 
 \subsection*{Multitasking}
 
 FreeRTOS implements multitasking through tasks that can be created with either static or dynamic memory allocation.
-RTX5 (CMSIS OS2) uses threads defined by the CMSIS OS2 standard, which supports priority-based preemption; it is tightly integrated into the ARM ecosystem, which can simplify portability.
+RTX5 (CMSIS OS2) uses `threads' defined by the CMSIS OS2 standard, which supports priority-based preemption; and is tightly integrated into the ARM ecosystem.
 
 \subsection*{Scheduler}
 
-The FreeRTOS scheduler is tick-driven and primarily priority-based. Its design ensures that higher-priority tasks preempt lower-priority ones, which is fundamental for ensuring that time-critical tasks receive the processor time they need. The simplicity of this approach is part of what makes FreeRTOS so efficient in environments where resources are severely limited.
+The FreeRTOS scheduler is tick-driven and primarily priority-based. Its design ensures that higher-priority tasks preempt lower-priority ones, which is fundamental for ensuring that time-critical tasks receive the processor time they need. 
+The simplicity of this approach is part of what makes FreeRTOS so efficient in environments where resources are severely limited.
 
-While RTX5 also employs a priority-based scheduler, it differentiates itself with additional features such as time-slicing among threads of equal priority. This feature helps ensure fairness in CPU time allocation when tasks share the same level of importance. Moreover, the integration of the scheduler within the broader ARM ecosystem means that RTX5 can leverage hardware-specific features to optimize task switching and reduce latency.
+While RTX5 also employs a priority-based scheduler, it differentiates itself with additional features such as time-slicing among threads of equal priority.
+This feature helps ensure fairness in CPU time allocation when tasks share the same level of importance. 
+Moreover, the integration of the scheduler within the broader ARM ecosystem means that RTX5 can leverage hardware-specific features to optimize task switching and reduce latency.
 
 \subsection*{Inter-task communication objects}
 
@@ -69,7 +67,7 @@ On the other hand, RTX5’s object-oriented approach introduces a level of abstr
          &
         Message/ mail queues, semaphores, mutexes, event flags
         \\ \midrule
-        Interesting aspects
+        Design philosophy, standardization \& portability
          &
         Minimalistic design, low overhead
          &
@@ -81,9 +79,9 @@ On the other hand, RTX5’s object-oriented approach introduces a level of abstr
     }\label{tab:comparison}
 \end{table}
 
-\section*{References}
+\newpage
+\subsection*{Resources}
 
-\scriptsize
 \begin{itemize}[noitemsep, leftmargin=*]
     \item \url{https://github.com/FreeRTOS/FreeRTOS}
     \item \url{https://github.com/FreeRTOS/FreeRTOS-Kernel}
