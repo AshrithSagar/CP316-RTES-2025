@@ -17,19 +17,26 @@ RTX5 (CMSIS OS2) uses threads defined by the CMSIS OS2 standard, which supports 
 
 \subsection*{Scheduler}
 
-The FreeRTOS scheduler operates as a tick-driven, priority-based preemptive scheduler.
-The RTX5 scheduler is also priority-based with support for time-slicing among threads of equal priority.
+The FreeRTOS scheduler is tick-driven and primarily priority-based. Its design ensures that higher-priority tasks preempt lower-priority ones, which is fundamental for ensuring that time-critical tasks receive the processor time they need. The simplicity of this approach is part of what makes FreeRTOS so efficient in environments where resources are severely limited.
+
+While RTX5 also employs a priority-based scheduler, it differentiates itself with additional features such as time-slicing among threads of equal priority. This feature helps ensure fairness in CPU time allocation when tasks share the same level of importance. Moreover, the integration of the scheduler within the broader ARM ecosystem means that RTX5 can leverage hardware-specific features to optimize task switching and reduce latency.
 
 \subsection*{Inter-task communication objects}
 
 The FreeRTOS kernel provides a variety of inter-task communication objects, such as queues, semaphores, mutexes, and event groups.
+These mechanisms are designed to be lightweight and efficient, matching the overall minimalistic ethos of the kernel.
+However, their implementation can sometimes vary based on the specific platform or configuration used.
+
 RTX5, on the other hand, provides similar inter-task communication objects, such as message queues, mail queues, semaphores, mutexes, and event flags.
-The RTX5 API is more object-oriented and standardized, which eases development and enforces consistency.
+The RTX5 API is more object-oriented and standardized, which leads to a more structured programming environment that enforces consistency and can simplify maintenance, especially in larger projects.
+The standardized nature of these objects also promotes code portability across different ARM-based platforms.
 
 \section*{Interesting aspects}
 
-In terms of standardization and portability, RTX5’s adherence to the CMSIS OS2 standard means that its API remains consistent across all ARM platforms.
+In terms of standardization and portability, RTX5 adheres to the CMSIS OS2 standard.
+This emphasis on a standardized API means that tasks (or threads) behave consistently across various ARM platforms, enhancing portability and reducing the learning curve when moving projects between different hardware.
 This contrasts with FreeRTOS, which, while extremely popular and highly flexible, can involve more platform-specific configuration.
 
-In terms of design philosophy, FreeRTOS is quite good for its minimalistic, low-overhead approach.
-On the other hand, RTX5’s object-oriented approach provides a more structured environment that aligns with modern software engineering practices. This design not only aids clarity but can also lead to easier maintenance and scalability in complex projects.
+In terms of design philosophy, FreeRTOS’s minimalistic design is incredibly effective for systems with strict resource constraints.
+Its simplicity translates to low overhead and ease of deployment on small microcontrollers.
+On the other hand, RTX5’s object-oriented approach introduces a level of abstraction that, while potentially incurring slightly higher overhead, benefits clarity, ease of maintenance, and scalability in larger/ complex projects.
