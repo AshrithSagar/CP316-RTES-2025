@@ -1,5 +1,12 @@
 # Toolchain installed using homebrew; $PATH is taken care
 
+# Usage: ./build.sh /dev/diskX main-*.c
+# args: mount point, and main-*.c is the file to be compiled
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 <mount-point> <main-file>"
+    exit 1
+fi
+
 # ARM architecture specific compiler flags
 CFLAGS="-O3 -mcpu=cortex-m4 -mthumb -mabi=aapcs -mfloat-abi=hard -mfpu=fpv4-sp-d16"
 LIBS="/opt/arm-gcc/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libm.a \
@@ -12,8 +19,9 @@ arm-none-eabi-gcc -c $CFLAGS startup.c
 echo Compiling system.c
 arm-none-eabi-gcc -c $CFLAGS system.c
 
-echo Preprocessing main.c
-arm-none-eabi-gcc -c $CFLAGS main.c
+# Provide a main.c file as argument
+echo Preprocessing "$2"
+arm-none-eabi-gcc -c $CFLAGS "$2"
 
 echo Compiling ledbtn.c
 arm-none-eabi-gcc -c $CFLAGS ledbtn.c
@@ -30,7 +38,7 @@ arm-none-eabi-gcc -c $CFLAGS timer.c
 # Link the object code to form exectuable program
 echo Linking
 arm-none-eabi-ld -T bare.ld -Map tiny.map \
-startup.o system.o main.o ledbtn.o uart.o printf.o timer.o $LIBS -o tiny.out
+startup.o system.o "${2%.c}.o" ledbtn.o uart.o printf.o timer.o $LIBS -o tiny.out
 
 # Check sizes
 arm-none-eabi-size tiny.out
