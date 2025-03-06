@@ -56,6 +56,8 @@ int main() {
   uart_init(UART_RX, UART_TX);
   timer_init();
 
+  printf("\nPress and release the button when the LED turns on.");
+
   timer_start(0, 1000, blink);
   // Every 1s, turn the LED on
 

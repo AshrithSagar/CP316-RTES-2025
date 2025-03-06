@@ -37,10 +37,9 @@
 
 /* On-board speaker and mic */
 #define SPEAKER 0 // P0_00
-#define MIC                                                                    \
-  3                // AIN3 on P0_05
-                   //  (we need to specify analog input channel,
-                   //   and not the pin number)
+#define MIC 3     // AIN3 on P0_05
+//  (we need to specify analog input channel,
+//   and not the pin number)
 #define RUN_MIC 20 // P0_20
 
 /* Edge connector pins */
