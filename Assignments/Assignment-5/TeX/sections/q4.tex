@@ -3,3 +3,6 @@
 Why are there two stacks?
 
 \subsubsection*{Solution}
+
+The main task (running \texttt{main}) requires one stack, and the created task (running \texttt{task1}) needs a separate stack.
+Each task has its own execution context, including a stack for function calls, local variables, and saved register states.

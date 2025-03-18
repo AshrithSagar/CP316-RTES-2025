@@ -4,3 +4,7 @@
 Why are they still pushed and popped?
 
 \subsubsection*{Solution}
+
+Although \texttt{SVC\_Handler} does not use \texttt{R4}-\texttt{R11} directly, these registers, known as \textit{callee-saved registers}, must still be saved and restored.
+If a function or interrupt handler uses them, it must be responsible for saving and restoring their values.
+Since the CPU does not save them automatically, the OS must manually push them before switching tasks and restore them afterward.

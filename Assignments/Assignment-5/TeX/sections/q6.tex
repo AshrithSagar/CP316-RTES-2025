@@ -3,3 +3,7 @@
 Explain \texttt{task\_create} code.
 
 \subsubsection*{Solution}
+
+The function \texttt{task\_create} initializes a new stack for the created task.
+It prepares the hardware context frame to mimic what the CPU expects on an exception.
+It manually saves registers \texttt{R4} to \texttt{R11} and stores the stack pointer in \texttt{task\_sp[1]} for future use.

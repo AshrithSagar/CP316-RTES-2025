@@ -5,3 +5,8 @@
 The code mentiones `hardware context' – what is it?
 
 \subsubsection*{Solution}
+
+The hardware context refers to the CPU registers that must be saved and restored when switching between tasks.
+This includes registers that the CPU automatically saves on exceptions, as well as registers that the OS must manually save and restore.
+When an exception occurs, the CPU automatically pushes the following onto the stack: \texttt{xPSR}, \texttt{PC}, \texttt{LR}, \texttt{R12}, \texttt{R3}, \texttt{R2}, \texttt{R1}, \texttt{R0}.
+In addition, the OS must explicitly save registers \texttt{R4} to \texttt{R11}.

@@ -3,3 +3,8 @@
 What is the purpose of \texttt{task\_sp} array?
 
 \subsubsection*{Solution}
+
+The \texttt{task\_sp} array stores the stack pointers of each task:
+\texttt{task\_sp}[0], which is for the main task, and \texttt{task\_sp}[1], which is for the created task.
+During a context switch, the OS saves the current task's stack pointer in \texttt{task\_sp[cur\_tid]}, and later restores the next task's stack pointer from \texttt{task\_sp[next\_tid]}.
+It is there to keep track of the stack pointer for each task, allowing the OS to switch between tasks by saving and restoring the stack pointer.

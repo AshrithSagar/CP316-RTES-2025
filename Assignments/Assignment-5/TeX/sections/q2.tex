@@ -3,3 +3,9 @@
 How is \texttt{SVC\_Handler} called?
 
 \subsubsection*{Solution}
+
+The function \texttt{SVC\_Handler} is invoked by executing the Supervisor Call (\texttt{SVC}) instruction in \texttt{task\_yield}.
+\begin{verbatim}
+void task_yield(void) { __asm("svc 0"); }
+\end{verbatim}
+This triggers a software interrupt, transferring control to \texttt{SVC\_Handler}.
