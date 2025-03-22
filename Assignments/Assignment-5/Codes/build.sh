@@ -1,3 +1,12 @@
+# Toolchain installed using homebrew; $PATH is taken care
+
+# Usage: ./build.sh /dev/diskX
+# args: mount point
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <mount-point>"
+    exit 1
+fi
+
 # Path to tool-chain
 ARMGCC=/opt/arm-gcc
 export PATH=$PATH:$ARMGCC/bin
@@ -18,11 +27,11 @@ arm-none-eabi-gcc -c $CFLAGS main.c
 # Link the object code to form exectuable program
 echo Linking MICROBIT.out
 arm-none-eabi-ld -T nrf52833.ld -Map system.map --entry Reset_Handler \
-startup.o system.o main.o bsp/libbsp.a \
-$ARMGCC/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libm.a \
-$ARMGCC/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a \
-$ARMGCC/lib/gcc/arm-none-eabi/14.2.1/thumb/v7e-m+fp/hard/libgcc.a \
--o MICROBIT.out
+    startup.o system.o main.o bsp/libbsp.a \
+    $ARMGCC/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libm.a \
+    $ARMGCC/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc.a \
+    $ARMGCC/lib/gcc/arm-none-eabi/14.2.1/thumb/v7e-m+fp/hard/libgcc.a \
+    -o MICROBIT.out
 
 # Check sizes
 arm-none-eabi-size MICROBIT.out
@@ -31,12 +40,12 @@ arm-none-eabi-size MICROBIT.out
 arm-none-eabi-objcopy -O ihex MICROBIT.out MICROBIT.hex
 
 # Upload on the target
+# Check with `df -ahY` to see the mounted devices,
+# and pass the correct one as argument while running
+# Eg: `sudo ./build.sh /dev/disk6`
 echo Flashing
-sudo mkdir -p /mnt/MICROBIT             # create if doesn't exist
-sudo mount -t drvfs E: /mnt/MICROBIT
-sudo /bin/cp MICROBIT.hex /mnt/MICROBIT
-
-# The above command is applicable for a Windows PC. You may change it
-# appropriately to on Linux or MacOS. It should be something like:
-# cp MICROBIT.hex /media/MICROBIT       # linux
-# cp MICROBIT.hex /Volumes/MICROBIT     # mac
+FLASHDIR="/Volumes/MICROBIT"
+mkdir -p "$FLASHDIR"
+diskutil unmount "$1"
+sudo mount -t msdos "$1" "$FLASHDIR"
+cp tiny.hex "$FLASHDIR"
