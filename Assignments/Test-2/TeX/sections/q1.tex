@@ -1,0 +1,15 @@
+\section*{Question 1}
+
+While debugging my code, I found that variable x was getting overwritten somewhere.
+I did not know where, so I wrote the following function to write its value in a buffer, along with a timestamp.
+\lstinputlisting[language=C, frame=single, linewidth=\linewidth]{../Codes/q1.c}
+The function \texttt{get\_time\_in\_usec} returns the value of a 32-bit timer, which counts the number of 1 \( \mu \texttt{s} \) ticks since the timer was initialized. \\
+It worked fine in my standalone code.
+But once I start using it in a multitasking system from different tasks and ISRs, the logged values were often inconsistent.
+\begin{itemize}[noitemsep, topsep=0pt, leftmargin=*]
+    \item Can you explain why?
+    \item And what should be done to fix?
+\end{itemize}
+
+\vspace*{-1em}
+\subsection*{Solution}
