@@ -6,20 +6,20 @@ Both are connected to GPIO pins on a microcontroller.
 \begin{itemize}[noitemsep, topsep=0pt, leftmargin=*]
     \item
           Trigger is an output pin.
-          We need to set it high for \( 10 \texttt{ ms} \) to start the measurement.
+          We need to set it high for \( 10 \, \texttt{ms} \) to start the measurement.
           The sensor sends out a sound wave in the form of a series of pulses of ultrasonic frequency.
           The wave echoes back after hitting a surface.
           The time of echo is used to measure the distance from the surface.
     \item
           Echo is an input pin.
           It remains high for the duration of echo.
-          For example, if it takes \( 10 \texttt{ ms} \) for the sound wave to hit a surface and return, the echo pin remains high for \( 10 \texttt{ ms} \).
+          For example, if it takes \( 10 \, \texttt{ms} \) for the sound wave to hit a surface and return, the echo pin remains high for \( 10 \, \texttt{ms} \).
 \end{itemize}
 Distance can be calculated by the formula: \( d = v * T / 2 \) \\
-where, \( v = \text{velocity of sound} = 343 m/s \) \\
+where, \( v = \text{velocity of sound} = 343 \, \texttt{m/s} \) \\
 \( T = \text{time taken for wave to hit the surface and return (traveling total distance 2d)} \). \\
-The pulse width is clipped at \( 24 \texttt{ ms} \) corresponding to approximately \( 4 \texttt{ m} \) distance.
-Distances larger than \( 4 \texttt{ m} \) are considered out of range.
+The pulse width is clipped at \( 24 \, \texttt{ms} \) corresponding to approximately \( 4 \, \texttt{m} \) distance.
+Distances larger than \( 4 \, \texttt{m} \) are considered out of range.
 Now, consider the implementation of an ultrasonic sensor read function:
 \lstinputlisting[language=C, frame=single, linewidth=\linewidth]{../Codes/q2.c}
 Answer the following:
