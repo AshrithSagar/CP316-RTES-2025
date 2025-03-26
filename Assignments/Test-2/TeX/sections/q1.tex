@@ -32,3 +32,7 @@ This can be achieved by disabling the interrupts before reading the value of \te
 This way, we ensure that the entire sequence of operations is executed without any context switches, and the value of \texttt{x} (and \texttt{count}) is consistent throughout the function call, thereby storing what we intended.
 To do this, we add \texttt{\_\_disable\_irq()} at the start of the function, and \texttt{\_\_enable\_irq()} at the end of the function, which disables and enables the interrupts respectively, thereby making the function call atomic.
 The cost for doing that is that the interrupts are disabled for a short period of time, which we're not listening for.
+
+Another way to handle this is to use a mutex, which allows for mutual exclusion in accessing a shared resource, which is the variable \texttt{x} in this case.
+This way, even when there is a context switch, we can be sure that the value of \texttt{x} is not changed by any other task or ISR, since the mutex is locked by the current task, thereby preventing any changes to it.
+This way, we can ensure that the value of \texttt{x} is consistent throughout the function call, and the logged value is what we intended.
