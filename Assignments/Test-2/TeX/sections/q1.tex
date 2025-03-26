@@ -1,6 +1,6 @@
 \section*{Question 1}
 
-While debugging my code, I found that variable x was getting overwritten somewhere.
+While debugging my code, I found that variable \texttt{x} was getting overwritten somewhere.
 I did not know where, so I wrote the following function to write its value in a buffer, along with a timestamp.
 \lstinputlisting[language=C, frame=single, linewidth=\linewidth]{../Codes/q1.c}
 The function \texttt{get\_time\_in\_usec} returns the value of a 32-bit timer, which counts the number of 1 \( \mu \texttt{s} \) ticks since the timer was initialized. \\
@@ -11,5 +11,24 @@ But once I start using it in a multitasking system from different tasks and ISRs
     \item And what should be done to fix?
 \end{itemize}
 
-\vspace*{-1em}
+\clearpage
 \subsection*{Solution}
+
+The key concept involved here is atomicity.
+When this function \texttt{dumpx} is used in a multitasking system, the operations after getting the \texttt{x} value happen over multiple steps, thereby there is a possibility of a context switch happening in between.
+First, we get the timer count and store it in the buffer.
+If a context switch happens here, before we read the \texttt{x} value, there is a possibility that the value of \texttt{x} is changed elsewhere, since it external to this function.
+There is also the possibility that the \texttt{count} variable is changed, since it is a global variable.
+Now, when the context switches back, the value of \texttt{x} (or \texttt{count}) is different from what we intended to log, causing an inconsistency.
+The intended value of \texttt{x} (or \texttt{count}) is lost due to the context switch, since that value is not stored in the context, since they are global variables.
+
+The \texttt{extern} keyword here is used to inform the compiler that the variable \texttt{x} is defined elsewhere, and no memory is allocated for this variable, and it is just for the sake that the compiler knows that this variable is defined elsewhere, and to use that value here, which happens in the linking stage and not in the compilation stage.
+
+\vspace*{1em}
+
+The way to handle this inconsistency is to make the function call atomic.
+What this means is that the entire function call for \texttt{dumpx} should be executed without any context switches, once it enters the critical region.
+This can be achieved by disabling the interrupts before reading the value of \texttt{x}, and enabling them back once the value is logged.
+This way, we ensure that the entire sequence of operations is executed without any context switches, and the value of \texttt{x} (and \texttt{count}) is consistent throughout the function call, thereby storing what we intended.
+To do this, we add \texttt{\_\_disable\_irq()} at the start of the function, and \texttt{\_\_enable\_irq()} at the end of the function, which disables and enables the interrupts respectively, thereby making the function call atomic.
+The cost for doing that is that the interrupts are disabled for a short period of time, which we're not listening for.
