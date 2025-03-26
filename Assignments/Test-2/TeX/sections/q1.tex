@@ -25,7 +25,6 @@ The intended value of \texttt{x} (or \texttt{count}) is lost due to the context 
 The \texttt{extern} keyword here is used to inform the compiler that the variable \texttt{x} is defined elsewhere, and no memory is allocated for this variable, and it is just for the sake that the compiler knows that this variable is defined elsewhere, and to use that value here, which happens in the linking stage and not in the compilation stage.
 
 \vspace*{1em}
-
 The way to handle this inconsistency is to make the function call atomic.
 What this means is that the entire function call for \texttt{dumpx} should be executed without any context switches, once it enters the critical region.
 This can be achieved by disabling the interrupts before reading the value of \texttt{x}, and enabling them back once the value is logged.

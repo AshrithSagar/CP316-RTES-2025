@@ -17,7 +17,7 @@ Both are connected to GPIO pins on a microcontroller.
 \end{itemize}
 Distance can be calculated by the formula: \( d = v * T / 2 \) \\
 where, \( v = \text{velocity of sound} = 343 \, \texttt{m/s} \) \\
-\( T = \text{time taken for wave to hit the surface and return (traveling total distance 2d)} \). \\
+\( T = \) time taken for wave to hit the surface and return (traveling total distance \( 2d \)). \\
 The pulse width is clipped at \( 24 \, \texttt{ms} \) corresponding to approximately \( 4 \, \texttt{m} \) distance.
 Distances larger than \( 4 \, \texttt{m} \) are considered out of range.
 Now, consider the implementation of an ultrasonic sensor read function:
@@ -28,5 +28,47 @@ Answer the following:
     \item How should the function be modified so that it can be used from multiple threads?
 \end{itemize}
 
-\vspace*{-1em}
+\clearpage
 \subsection*{Solution}
+
+The provided implementation has a couple of real-time issues, mainly due to the busy-waiting loop, and it's blocking behavior.
+Firstly, the function busy-waits for the echo pin, which has several drawbacks, such as the CPU being blocked and not being able to perform other tasks during this time.
+This is a drawback of busy-waiting in general in real-time systems.
+
+Secondly, there is no timeout implemented while waiting.
+The busy-waiting implemented here is unbounded.
+If there is a situation where the echo pin never goes high, the function will be stuck in an infinite loop, waiting for the echo to start.
+Same holds true when it's waiting for the echo to go low, before calculating the distance.
+This situation may occur due to various reasons, such as the sensor being faulty, or the sound wave not hitting any surface, or in case of a multi-threaded system, if there is a context switch happening to some other thread, and we miss out on the echo pulse.
+
+Thirdly, the function is not thread-safe.
+It is possible for multiple threads to access the registers and modify, which can lead to race conditions.
+This can be addressed by using a mutex to ensure mutual exclusion while accessing the sensor.
+
+\vspace*{1em}
+To adapt this function in a multi-threaded environment, we need to make a few changes, namely, including a timeout, implementing through interrupts, and using a mutex for mutual exclusion while accessing the sensor.
+
+Timeouts can be implemented either through interrupts or through a timer.
+In the case of interrupts, we can set up an interrupt handler for the echo pin, which will be triggered when the echo pin goes high or low.
+This way, we can avoid busy-waiting and can perform other tasks while waiting for the echo.
+The interrupt handler can set a flag when the echo pin goes high, and another flag when it goes low.
+The main function can then wait for these flags to be set, and then proceed to calculate the distance.
+This way, the function will not be blocked, and can be used from multiple threads.
+
+\vspace*{1em}
+A rough sketch of the modified function is as follows (\autoref{lst:bounded-busy}), which implements a bounded busy-waiting loop, and uses a mutex for accessing the sensor, and some error codes appropriately.
+This is still polling based, so has the drawbacks of CPU being blocked waiting for the echo.
+
+A rough sketch of the modified function using interrupts is as follows (\autoref{lst:interrupts}), which uses interrupts to handle the echo pin, avoiding busy-waiting altogether.
+This way, the function can be used from multiple threads, and the CPU is not blocked while waiting for the echo.
+
+\vspace*{1em}
+\textbf{Additional remarks}
+Assuming \texttt{get\_time\_in\_usec()} is a function that returns the current time in microseconds.
+Also, not sure of how to avoid performing an \texttt{OS} call in an interrupt handler (\autoref{lst:interrupts}), although this pattern is not recommended owing to keeping interrupt handlers as short as possible.
+
+\clearpage
+\lstinputlisting[language=C, frame=single, linewidth=\linewidth, caption={Modified function using bounded busy-wait and mutex}, label={lst:bounded-busy}]{../Codes/q2a.c}
+
+\clearpage
+\lstinputlisting[language=C, frame=single, linewidth=\linewidth, caption={Modified function using interrupts in addition}, label={lst:interrupts}]{../Codes/q2b.c}
