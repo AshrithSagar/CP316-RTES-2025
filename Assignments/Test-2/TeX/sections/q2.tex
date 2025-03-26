@@ -39,7 +39,7 @@ Secondly, there is no timeout implemented while waiting.
 The busy-waiting implemented here is unbounded.
 If there is a situation where the echo pin never goes high, the function will be stuck in an infinite loop, waiting for the echo to start.
 Same holds true when it's waiting for the echo to go low, before calculating the distance.
-This situation may occur due to various reasons, such as the sensor being faulty, or the sound wave not hitting any surface, or in case of a multi-threaded system, if there is a context switch happening to some other thread, and we miss out on the echo pulse.
+This situation may occur due to various reasons, such as the sensor being faulty, or the sound wave not hitting any surface (\( 4 \, \texttt{m} \) cutoff mentioned, but not used), or in case of a multi-threaded system, if there is a context switch happening to some other thread, and we miss out on the echo pulse.
 
 Thirdly, the function is not thread-safe.
 It is possible for multiple threads to access the registers and modify, which can lead to race conditions.

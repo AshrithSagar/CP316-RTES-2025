@@ -46,7 +46,7 @@ float usonic_read(void) {
   // Measure the pulse width
   if (osSemaphoreAcquire(usonic_semaphore, TIMEOUT_MS) != osOK) {
     osMutexRelease(usonic_mutex);
-    return -3.0f; // Timeout (did not receive falling edge)
+    return -3.0f; // Timeout (out of range)
   }
 
   uint32_t time_diff;
