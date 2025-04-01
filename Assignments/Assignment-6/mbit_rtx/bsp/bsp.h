@@ -1,15 +1,14 @@
 #ifndef BSP_H
 #define BSP_H
 
-#include "microbit.h"
-#include "gpio.h"
-#include "ledbtn.h"
-#include "uart.h"
-#include "pwm.h"
 #include "adc.h"
 #include "audio.h"
+#include "gpio.h"
+#include "ledbtn.h"
+#include "microbit.h"
 #include "printf.h"
-#include "timer.h"
+#include "pwm.h"
+#include "uart.h"
 
 void bsp_init(void);
 

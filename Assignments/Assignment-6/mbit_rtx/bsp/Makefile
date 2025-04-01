@@ -1,5 +1,5 @@
 # Source files common to all targets
-SRC = gpio.c ledbtn.c uart.c printf.c pwm.c adc.c audio.c timer.c bsp.c
+SRC = gpio.c ledbtn.c uart.c printf.c pwm.c adc.c audio.c bsp.c
 
 # Object files generated from the source files
 OBJ = $(subst .c,.o,$(SRC))
@@ -15,6 +15,5 @@ printf.o: printf.c printf.h
 pwm.o: pwm.c pwm.h
 adc.o: adc.c adc.h
 audio.o: audio.c audio.h gpio.h pwm.h adc.h
-timer.o: timer.c timer.h
 bsp.o: bsp.c bsp.h microbit.h gpio.h ledbtn.h uart.h pwm.h adc.h audio.h \
- printf.h timer.h
+ printf.h
