@@ -7,7 +7,7 @@ SRC = startup.c system.c main.c
 OBJ = $(subst .c,.o,$(SRC))
 
 # Include directories
-CFLAGS = -I bsp # library include path
+CFLAGS = -I bsp -I rtx # library include path
 LINKER_SCRIPT = nrf52833.ld        # linker command script
 
 all: flash
@@ -17,7 +17,7 @@ include rules.mk
 ########################################################################
 
 # Libraries used
-LIBS = bsp/libbsp.a
+LIBS = bsp/libbsp.a rtx/librtx.a
 
 # Add standard libraries at the very end of the linker input, after all objects
 # that may need symbols provided by these libraries.
@@ -38,6 +38,7 @@ $(TARGET).hex: $(TARGET).out
 
 $(TARGET).out::
 	@make --no-print-directory -C bsp libbsp.a
+	@make --no-print-directory -C rtx librtx.a
 
 $(TARGET).out:: $(OBJ) $(LINKER_SCRIPT) bsp/libbsp.a
 	$(LD) $(LDFLAGS) $(OBJ) $(LIBS) -o $@
@@ -45,10 +46,11 @@ $(TARGET).out:: $(OBJ) $(LINKER_SCRIPT) bsp/libbsp.a
 
 clean::
 	cd bsp && make clean
+	cd rtx && make clean
 	/bin/rm -f $(OBJ) system.map $(TARGET).out $(TARGET).hex
 
 .PHONY: all flash clean
 
 startup.o: startup.c
 system.o: system.c
-main.o: main.c bsp/bsp.h
+main.o: main.c bsp/bsp.h rtx/cmsis_os2.h
