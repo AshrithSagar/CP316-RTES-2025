@@ -1,0 +1,58 @@
+\section*{Instructions}
+
+\vspace*{-1.5em}
+\subsection*{System Scenario}
+\vspace*{-0.5em}
+
+You are designing embedded software for a small autonomous robot with line-following, obstacle avoidance, audio interaction and debugging capabilities.
+The system runs on a microcontroller with an RTOS.\@
+
+\vspace*{-1.5em}
+\subsection*{Hardware and Interfaces}
+\vspace*{-0.5em}
+
+\begin{itemize}[noitemsep, topsep=0pt]
+    \item Eight binary light sensors for line following (high for light, low for dark)
+    \item Ultrasonic distance sensor (front-facing)
+    \item Two motors (left and right)
+    \item Microphone connected via ADC
+    \item Radio link (for debug messages from tasks)
+\end{itemize}
+
+\vspace*{-1.5em}
+\subsection*{System Behavior}
+\vspace*{-0.5em}
+
+\begin{enumerate}[noitemsep, topsep=0pt]
+    \item On power-up, the system waits in idle mode.
+
+    \item On a valid voice command, the robot starts moving and follows the line using the light sensors.
+          You don't need to implement the control algorithm for line-following; assume a black-box function is available that takes sensor input and returns motor duty cycles.
+
+    \item If an obstacle is detected within 30 cm, the robot stops and waits until the obstacle is cleared before resuming line-following.
+
+    \item The robot listens for voice commands through the microphone.
+          A start word (such as ``go'') starts the robot, and a stop word (such as ``stop'') halts its operation and returns it to idle mode.
+
+    \item The microphone is connected to a 16-bit ADC that triggers an interrupt at 8 kHz sampling rate.
+
+    \item All tasks use the radio link for debugging.
+          Debug messages can be printed into a buffer (\texttt{sprintf}) and then the buffer can be transmitted over the radio interface.
+\end{enumerate}
+
+\vspace*{-1.5em}
+\subsection*{Voice Command Detection Details}
+\vspace*{-0.5em}
+
+The algorithm checks for known words using a lightweight pattern-matching technique.
+
+\begin{itemize}[noitemsep, topsep=0pt]
+    \item The detection algorithm is implemented as a black-box function that takes in a window (buffer) of audio samples, updates its internal state, and returns a decision: index of the word detected, or -1 for detection in progress.
+
+    \item The algorithm runs window by window, where each window is of 32 ms duration.
+          Once a window is passed to the algorithm, its samples are no longer required and can be discarded or reused.
+
+    \item The algorithm takes about 8ms to 12ms to execute.
+
+    \item The algorithm requires a minimum of 4 consecutive windows to make a decision.
+\end{itemize}
