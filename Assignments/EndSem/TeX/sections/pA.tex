@@ -14,14 +14,33 @@ Draw the data flows:
 \subsection*{Solution}
 \vspace*{-0.5em}
 
-\begin{figure*}[ht]
+\begin{figure*}[htbp]
     \centering
     \includegraphics[page=1, width=\linewidth]{figures/pA/_}
     \vspace*{-3em}
     \caption{System block diagram}
 \end{figure*}
+
 \vspace*{-1em}
-\begin{figure*}[ht]
+\begin{figure*}[htbp]
     \centering
-    \includegraphics[page=2, width=0.4\linewidth]{figures/pA/_}
+    \begin{minipage}{0.45\linewidth}
+        \centering
+        \includegraphics[page=2, width=\linewidth]{figures/pA/_}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.49\linewidth}
+        Task priority order:
+        \begin{itemize}[noitemsep, topsep=0pt]
+            \item \texttt{AudioProc} task \( \to \) Highest priority
+            \item \texttt{Control} task \( \to \) Medium priority
+            \item \texttt{RadioTx} task \( \to \) Lowest priority
+        \end{itemize}
+
+        \vspace*{1em}
+        Periodicity of the timer callbacks:
+        \begin{itemize}[noitemsep, topsep=0pt]
+            \item \texttt{ADC ISR} \( \to 8\,\texttt{kHz} \implies 125\,\mu\texttt{s} \)
+        \end{itemize}
+    \end{minipage}
 \end{figure*}
