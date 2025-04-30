@@ -26,7 +26,16 @@
     draw=black,
     fill=red!20
   },
-  hw/.style={
+  hw_in/.style={
+    trapezium,
+    trapezium left angle=110,
+    trapezium right angle=70,
+    minimum height=2em,
+    text centered,
+    draw=black,
+    fill=gray!40
+  },
+  hw_out/.style={
     trapezium,
     trapezium left angle=70,
     trapezium right angle=110,
@@ -60,11 +69,11 @@
   ]
 
   % Hardware blocks
-  \node (mic) [hw] {Microphone (ADC)};
-  \node (light) [hw, below=of mic] {Light Sensors};
-  \node (ultra) [hw, below=of light] {Ultrasonic Sensor};
-  \node (motor) [hw, below=of ultra] {Motors};
-  \node (radio) [hw, below=of motor] {Radio Link};
+  \node (mic) [hw_in] {Microphone (ADC)};
+  \node (light) [hw_in, below=of mic] {Light Sensors};
+  \node (ultra) [hw_in, below=of light] {Ultrasonic Sensor};
+  \node (motor) [hw_out, below=of ultra] {Motors};
+  \node (radio) [hw_out, below=of motor] {Radio Link};
 
   % ISR and callbacks
   \node (adc_isr) [isr, left=of mic] {ADC ISR (8 \texttt{kHz})};
@@ -80,7 +89,7 @@
   \begin{scope}[on background layer]
     \node[group, draw=black,
     fit=(mic)(light)(ultra)(radio)(motor)(adc_isr)(timer_cb)(audio_task)(obs_task)(line_task)(radio_task),
-    label=below:{\bf System},
+    label=below:{\bf Autonomous robot system},
     xshift=-0.5cm, yshift=0.4cm,
     inner xsep=1cm, inner ysep=0.8cm] {};
 
@@ -112,7 +121,20 @@
 
   \draw[arrow, red, opacity=0.6]
   (radio_task.west) ++ (-1.6,-0.5) -- ++(0,6.75)
-  node[midway, above, rotate=90] {\bf Priority};
+  node[midway, above, rotate=90] {\bf Task priority};
+
+  % System interations
+  \node (mic_input) [right=of mic] {Voice commands};
+  \node (light_input) [right=of light] {Line};
+  \node (ultra_input) [right=of ultra] {Obstacles};
+  \node (motor_input) [right=of motor] {Robot movement};
+  \node (radio_input) [right=of radio] {Shell};
+
+  \draw [arrow] (mic_input.west) to (mic.east);
+  \draw [arrow] (light_input.west) to (light.east);
+  \draw [arrow] (ultra_input.west) to (ultra.east);
+  \draw [arrow] (motor.east) to (motor_input.west);
+  \draw [arrow] (radio.east) to (radio_input.west);
 
 \end{tikzpicture}
 \end{document}
