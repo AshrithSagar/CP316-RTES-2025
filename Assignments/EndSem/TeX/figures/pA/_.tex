@@ -1,5 +1,4 @@
-\documentclass[border=5pt]{standalone}
-\usepackage{tikz}
+\documentclass[tikz,border=5pt]{standalone}
 
 \usetikzlibrary{
   shapes.geometric,
@@ -64,9 +63,8 @@
 }
 
 \begin{document}
-\begin{tikzpicture}[
-    node distance=1cm and 2cm,
-  ]
+
+\begin{tikzpicture}[node distance=1cm and 2cm]
 
   % Hardware blocks
   \node (mic) [hw_in] {Microphone (ADC)};
@@ -124,11 +122,11 @@
   node[midway, above, rotate=90] {\bf Task priority};
 
   % System interations
-  \node (mic_input) [right=of mic] {Voice commands};
+  \node (mic_input) [right=of mic, xshift=-0.5cm, align=left] {Voice \\ commands};
   \node (light_input) [right=of light] {Line};
-  \node (ultra_input) [right=of ultra] {Obstacles};
-  \node (motor_input) [right=of motor] {Robot movement};
-  \node (radio_input) [right=of radio] {Shell};
+  \node (ultra_input) [right=of ultra, xshift=-0.7cm] {Obstacles};
+  \node (motor_input) [right=of motor, xshift=0.5cm, align=left] {Robot \\ movement};
+  \node (radio_input) [right=of radio, xshift=0.1cm] {Shell};
 
   \draw [arrow] (mic_input.west) to (mic.east);
   \draw [arrow] (light_input.west) to (light.east);
@@ -137,4 +135,32 @@
   \draw [arrow] (radio.east) to (radio_input.west);
 
 \end{tikzpicture}
+
+\begin{tikzpicture}[node distance=0.1cm and 0.3cm]
+
+  \node (legend) {\bf Legend};
+
+  \node[task, below=of legend] (task) {Task};
+  \node[right=of task] {Processing tasks};
+
+  \node[isr, below=0.5cm of task] (isr) {ISR};
+  \node[right=of isr] {Interrupt service routines};
+
+  \node[callback, below=0.5cm of isr] (cb) {Callback};
+  \node[right=of cb] {Callbacks};
+
+  \node[hw_in, below=0.5cm of cb] (hw_in) {In};
+  \node[hw_out, right=0.4cm of hw_in] (hw_out) {\( \sim \) Out};
+  \node[right=of hw_out] {Hardware / Interfaces};
+
+  \node[draw=none, below=0.5cm of hw_in] (arr_label) {};
+  \draw[arrow] (arr_label) -- ++(1.8,0);
+  \node[right=1.8cm of arr_label] {Data flow};
+
+  \node[draw=none, below=0.5cm of arr_label] (prio_label) {};
+  \draw[arrow, red, opacity=0.6] (prio_label) -- ++(1.8,0);
+  \node[right=1.8cm of prio_label] {Priority order};
+
+\end{tikzpicture}
+
 \end{document}
