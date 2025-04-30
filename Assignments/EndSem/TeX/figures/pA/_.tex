@@ -33,7 +33,7 @@
     minimum height=2em,
     text centered,
     draw=black,
-    fill=gray!30
+    fill=gray!40
   },
   callback/.style={
     rectangle,
@@ -68,20 +68,26 @@
   \node (radio) [hw, below=of motor] {Radio Link};
 
   % ISR and callbacks
-  \node (adc_isr) [isr, right=of mic] {ADC ISR (8 \texttt{kHz})};
+  \node (adc_isr) [isr, left=of mic] {ADC ISR (8 \texttt{kHz})};
   \node (timer_cb) [callback, below=of adc_isr, yshift=0cm] {32\texttt{ms} Timer Callback};
 
   % Tasks
-  \node (audio_task) [task, left=of mic] {Voice Command Task};
+  \node (audio_task) [task, left=of adc_isr] {Voice Command Task};
   \node (obs_task) [task, below=of audio_task] {Obstacle Avoidance Task};
   \node (line_task) [task, below=of obs_task] {Line Following Task};
   \node (radio_task) [task, below=of line_task] {Debugging Task};
 
   % Groups
   \begin{scope}[on background layer]
-    \node[group, fill=gray,
+    \node[group, draw=black,
+    fit=(mic)(light)(ultra)(radio)(motor)(adc_isr)(timer_cb)(audio_task)(obs_task)(line_task)(radio_task),
+    label=below:{\bf System},
+    xshift=-0.5cm, yshift=0.4cm,
+    inner xsep=1cm, inner ysep=0.8cm] {};
+
+    \node[group, fill=black,
     fit=(mic)(light)(ultra)(radio)(motor),
-    label=above:{\bf Hardware}] {};
+    label=above:{\bf Hardware / Interfaces}] {};
     \node[group, fill=red,
     fit=(adc_isr)(timer_cb),
     label=above:{\bf ISRs / Callbacks}] {};
@@ -91,14 +97,14 @@
   \end{scope}
 
   % Arrows
-  \draw [arrow] (mic.east) to (adc_isr.west);
-  \draw [arrow] (light.west) to[out=180, in=0] (line_task.east);
+  \draw [arrow] (mic.west) to (adc_isr.east);
+  \draw [arrow] (light.west) to[out=220, in=0] (line_task.east);
   \draw [arrow] (ultra.west) to[out=150, in=300] (obs_task.south east);
 
   \draw [arrow] (obs_task.south east) ++(-0.3,0) to[out=270, in=130] (motor.west);
-  \draw [arrow] (line_task.south east) to[out=300, in=190] (motor.west);
-  \draw [arrow] (adc_isr.south west) to[out=-170, in=-20] (audio_task.east);
-  \draw [arrow] (timer_cb.north west) to[out=170, in=-20] (audio_task.south east);
+  \draw [arrow] (line_task.south east) to[out=0, in=190] (motor.west);
+  \draw [arrow] (adc_isr.west) to (audio_task.east);
+  \draw [arrow] (timer_cb.west) to[out=180, in=0] (audio_task.south east);
   \draw [arrow] (radio_task.east) to[out=0, in=180] (radio.west);
 
   \draw [arrow] (audio_task.west) to[bend right=40] (radio_task.south west);
