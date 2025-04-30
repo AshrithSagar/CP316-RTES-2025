@@ -8,3 +8,26 @@ Describe synchronization mechanisms for the following:
 \end{itemize}
 
 \subsection*{Solution}
+
+We employ RTOS primitives to coordinate hardware ISRs and tasks, ensuring data integrity and low latency.
+
+\subsubsection*{Audio Sample Acquisition}
+\begin{itemize}
+    \item Producer (ADC ISR): Writes samples into the current ``prod'' buffer. After 256 samples, ISR swaps buffers under a brief critical section (interrupt-disable) to avoid race conditions, then gives \texttt{audioSem} (binary semaphore).
+    \item Consumer (AudioProc Task): Blocks on \texttt{xSemaphoreTake(audioSem)}, then safely reads the ``cons'' buffer, runs pattern-matching, and enqueues command codes.
+    \item Buffer Protection: Buffer indices toggled within ISR-disabled region (~<5\,µs) to guarantee atomicity.
+\end{itemize}
+
+\subsubsection*{Ultrasonic Echo Measurement}
+\begin{itemize}
+    \item Trigger (Timer Callback): Fires every 50\,ms, toggles trigger pin for 10\,µs pulse.
+    \item Echo ISR: On rising edge, stores \texttt{micros()}; on falling edge, computes duration, converts to distance (cm), then \texttt{xSemaphoreGiveFromISR(echoSem)}.
+    \item Control Task: Calls \texttt{xSemaphoreTake(echoSem, timeout)} to obtain latest distance reading without busy-waiting.
+\end{itemize}
+
+\subsubsection*{Debug Message Transmission}
+\begin{itemize}
+    \item Tasks format debug strings into an RTOS queue (\texttt{debugQueue}), which is inherently thread-safe.
+    \item RadioTx Task: Blocks on \texttt{xQueueReceive(debugQueue)}, dequeues messages, and calls \texttt{radioSend()}. Ensures ordered, non-blocking transmission.
+    \item Resource Guarding: \texttt{radioSend()} protected by driver-level mutex to handle DMA or UART conflicts.
+\end{itemize}

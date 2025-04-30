@@ -3,3 +3,24 @@
 Define the memory management scheme for the audio buffers, using statically or dynamically allocated buffers.
 
 \subsection*{Solution}
+
+We can choose a dual-buffer (ping-pong) scheme with statically allocated memory to avoid fragmentation and ensure real-time determinism.
+
+\begin{lstlisting}[language=C]
+#define AUDIO_WINDOW_SAMPLES 256
+// Two contiguous buffers in SRAM to avoid dynamic allocation overhead
+static int16_t audioBuf[2][AUDIO_WINDOW_SAMPLES];
+static volatile uint8_t prodIdx = 0;
+static volatile uint8_t consIdx = 1;
+// Semaphore signaled by ISR when prod buffer full
+SemaphoreHandle_t audioSem;
+
+void swapBuffers(void) {
+    uint8_t temp = prodIdx;
+    prodIdx = consIdx;
+    consIdx = temp;
+}
+\end{lstlisting}
+
+\noindent
+Buffer swap occurs entirely in the ISR context within a critical section (\( < 5 \) \,µs), guaranteeing that the AudioProc Task always sees a complete window.

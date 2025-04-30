@@ -6,3 +6,116 @@ You may use \texttt{radioSend\@()} to send a buffer of data over the radio link.
 If you need any other functionality, assume a suitable API and state it clearly.
 
 \subsection*{Solution}
+
+\subsubsection*{ADC ISR:}
+\vspace*{-0.5em}
+\begin{lstlisting}[language=C]
+void ADC_IRQHandler(void) {
+    static uint16_t sampleIdx = 0;
+    audioBuf[prodIdx][sampleIdx++] = analogRead();
+    if (sampleIdx >= AUDIO_WINDOW_SAMPLES) {
+        sampleIdx = 0;
+        // atomic swap
+        __disable_irq();
+        swapBuffers();
+        __enable_irq();
+        xSemaphoreGiveFromISR(audioSem, NULL);
+    }
+}
+\end{lstlisting}
+
+\vspace*{-1em}
+\subsubsection*{Timer Callback (Ultrasonic Trigger):}
+\vspace*{-0.5em}
+\begin{lstlisting}[language=C]
+void UltrasonicTimerCallback(void) {
+    digitalWrite(ULTRIG_PIN, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(ULTRIG_PIN, LOW);
+}
+\end{lstlisting}
+
+\newpage
+\subsubsection*{Echo ISR:}
+\vspace*{-0.5em}
+\begin{lstlisting}[language=C]
+void EXTI_ECHO_IRQHandler(void) {
+    static uint32_t startTime;
+    if (digitalRead(ECHOPIN)) {
+        startTime = micros();       // rising edge
+    } else {
+        uint32_t duration = micros() - startTime;
+        distanceCm = duration / 58; // convert to cm
+        xSemaphoreGiveFromISR(echoSem, NULL);
+    }
+}
+\end{lstlisting}
+
+\vspace*{-1em}
+\subsubsection*{AudioProc Task:}
+\vspace*{-0.5em}
+\begin{lstlisting}[language=C]
+void AudioProcTask(void *pvParameters) {
+    int16_t window[AUDIO_WINDOW_SAMPLES];
+    for (;;) {
+        xSemaphoreTake(audioSem, portMAX_DELAY);
+        memcpy(window, audioBuf[consIdx], sizeof(window));
+        int wordId = detectWord(window);
+        if (wordId >= 0) xQueueSend(cmdQueue, &wordId, 0);
+    }
+}
+\end{lstlisting}
+
+\vspace*{-1em}
+\subsubsection*{RadioTx Task:}
+\vspace*{-0.5em}
+\begin{lstlisting}[language=C]
+void RadioTxTask(void *pvParameters) {
+    char msg[80];
+    for (;;) {
+        xQueueReceive(debugQueue, msg, portMAX_DELAY);
+        radioSend((uint8_t*)msg, strlen(msg));
+    }
+}
+\end{lstlisting}
+
+\newpage
+\subsubsection*{Control Task:}
+\vspace*{-0.5em}
+\begin{lstlisting}[language=C]
+void ControlTask(void *pvParameters) {
+    enum State {IDLE, FOLLOW, STOPPED} state = IDLE;
+    int cmd;
+    for (;;) {
+        // process voice commands
+        if (xQueueReceive(cmdQueue, &cmd, 0) == pdPASS) {
+            if (cmd == WORD_GO && state == IDLE) state = FOLLOW;
+            else if (cmd == WORD_STOP) {
+                state = IDLE;
+                setMotorDuty(0,0);
+            }
+        }
+        // obstacle detection
+        if (state == FOLLOW) {
+            if (xSemaphoreTake(echoSem, 0) == pdPASS) {
+                if (distanceCm < 30) state = STOPPED;
+            }
+            if (state == FOLLOW) {
+                int duties[2];
+                blackBoxLineFollow(digitalReadSensors(), duties);
+                setMotorDuty(duties[0], duties[1]);
+            }
+        } else if (state == STOPPED) {
+            setMotorDuty(0,0);
+            if (xSemaphoreTake(echoSem, portMAX_DELAY) == pdPASS && distanceCm >= 30) {
+                state = FOLLOW;
+            }
+        }
+        // send debug info
+        char dbg[80];
+        sprintf(dbg, "State=%d Dist=%d\r\n", state, distanceCm);
+        xQueueSend(debugQueue, dbg, 0);
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+}
+\end{lstlisting}

@@ -3,3 +3,21 @@
 Identify any shared resources and specify if they need protection.
 
 \subsection*{Solution}
+
+\begin{itemize}
+      \item Audio Buffers:
+
+            Indices swapped under interrupt-disable; access by AudioProc guarded by semaphore.
+
+      \item RTOS Queues:
+
+            Audio command queue and debug queue are thread-safe FIFO structures provided by RTOS.\@
+
+      \item Radio Interface:
+
+            Protected by a mutex within driver layer to serialize DMA-driven or interrupt-driven transmissions.
+
+      \item Global Variables (e.g., distanceCm):
+
+            Written in ISR, read in Control Task; access synchronized via \texttt{echoSem} to ensure visibility and ordering.
+\end{itemize}
