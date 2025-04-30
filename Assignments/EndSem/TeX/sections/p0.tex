@@ -1,5 +1,17 @@
 \section*{Instructions}
 
+This is a take-home exam.
+It should take about 3 hours.
+Spending about an hour in part (A), understanding the functionality, dividing it into various tasks and ISRs and thinking through the key issues will help.
+
+Subsequently, spend 20--30 minutes on each of B, C and D.
+Finally, complete your answers with E.
+Don’t worry about getting everything perfect.
+Ensure that the key aspects of the design are covered and presented properly.
+
+You may make reasonable assumptions and state them clearly.
+Feel free to reach out for clarifications or discussions.
+
 \vspace*{-1.5em}
 \subsection*{System Scenario}
 \vspace*{-0.5em}
@@ -11,33 +23,37 @@ The system runs on a microcontroller with an RTOS.\@
 \subsection*{Hardware and Interfaces}
 \vspace*{-0.5em}
 
-\begin{itemize}[noitemsep, topsep=0pt]
-    \item Eight binary light sensors for line following (high for light, low for dark)
-    \item Ultrasonic distance sensor (front-facing)
-    \item Two motors (left and right)
-    \item Microphone connected via ADC
-    \item Radio link (for debug messages from tasks)
+\begin{itemize}[topsep=0pt]
+      \item Eight binary light sensors for line following (high for light, low for dark)
+
+      \item Ultrasonic distance sensor (front-facing)
+
+      \item Two motors (left and right)
+
+      \item Microphone connected via ADC
+
+      \item Radio link (for debug messages from tasks)
 \end{itemize}
 
 \vspace*{-1.5em}
 \subsection*{System Behavior}
 \vspace*{-0.5em}
 
-\begin{enumerate}[noitemsep, topsep=0pt]
-    \item On power-up, the system waits in idle mode.
+\begin{enumerate}[topsep=0pt]
+      \item On power-up, the system waits in idle mode.
 
-    \item On a valid voice command, the robot starts moving and follows the line using the light sensors.
-          You don't need to implement the control algorithm for line-following; assume a black-box function is available that takes sensor input and returns motor duty cycles.
+      \item On a valid voice command, the robot starts moving and follows the line using the light sensors.
+            You don't need to implement the control algorithm for line-following; assume a black-box function is available that takes sensor input and returns motor duty cycles.
 
-    \item If an obstacle is detected within 30 cm, the robot stops and waits until the obstacle is cleared before resuming line-following.
+      \item If an obstacle is detected within 30 cm, the robot stops and waits until the obstacle is cleared before resuming line-following.
 
-    \item The robot listens for voice commands through the microphone.
-          A start word (such as ``go'') starts the robot, and a stop word (such as ``stop'') halts its operation and returns it to idle mode.
+      \item The robot listens for voice commands through the microphone.
+            A start word (such as ``go'') starts the robot, and a stop word (such as ``stop'') halts its operation and returns it to idle mode.
 
-    \item The microphone is connected to a 16-bit ADC that triggers an interrupt at 8 kHz sampling rate.
+      \item The microphone is connected to a 16-bit ADC that triggers an interrupt at 8 kHz sampling rate.
 
-    \item All tasks use the radio link for debugging.
-          Debug messages can be printed into a buffer (\texttt{sprintf}) and then the buffer can be transmitted over the radio interface.
+      \item All tasks use the radio link for debugging.
+            Debug messages can be printed into a buffer (\texttt{sprintf}) and then the buffer can be transmitted over the radio interface.
 \end{enumerate}
 
 \vspace*{-1.5em}
@@ -46,13 +62,24 @@ The system runs on a microcontroller with an RTOS.\@
 
 The algorithm checks for known words using a lightweight pattern-matching technique.
 
-\begin{itemize}[noitemsep, topsep=0pt]
-    \item The detection algorithm is implemented as a black-box function that takes in a window (buffer) of audio samples, updates its internal state, and returns a decision: index of the word detected, or -1 for detection in progress.
+\begin{itemize}[topsep=0pt]
+      \item The detection algorithm is implemented as a black-box function that takes in a window (buffer) of audio samples, updates its internal state, and returns a decision: index of the word detected, or -1 for detection in progress.
 
-    \item The algorithm runs window by window, where each window is of 32 ms duration.
-          Once a window is passed to the algorithm, its samples are no longer required and can be discarded or reused.
+      \item The algorithm runs window by window, where each window is of 32 ms duration.
+            Once a window is passed to the algorithm, its samples are no longer required and can be discarded or reused.
 
-    \item The algorithm takes about 8ms to 12ms to execute.
+      \item The algorithm takes about 8ms to 12ms to execute.
 
-    \item The algorithm requires a minimum of 4 consecutive windows to make a decision.
+      \item The algorithm requires a minimum of 4 consecutive windows to make a decision.
 \end{itemize}
+
+\vspace*{-1.5em}
+\subsection*{Answer the following}
+\vspace*{-0.5em}
+
+Design the system as a collection of ISRs, timer callbacks and tasks.
+You also need to include mutual exclusion, synchronization and memory management objects as required.
+
+You may assume availability of the following RTOS objects: tasks (with priorities), semaphores (binary and counting), mutexes, message queues, memory pools and timers.
+
+\texttt{C}-like pseudocode is acceptable; the exact syntax is not important.
