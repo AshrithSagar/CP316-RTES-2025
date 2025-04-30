@@ -51,7 +51,6 @@
     rectangle,
     rounded corners,
     inner sep=8pt,
-    opacity=0.075,
   },
 }
 
@@ -85,13 +84,13 @@
     xshift=-0.5cm, yshift=0.4cm,
     inner xsep=1cm, inner ysep=0.8cm] {};
 
-    \node[group, fill=black,
+    \node[group, fill=black, opacity=0.075,
     fit=(mic)(light)(ultra)(radio)(motor),
     label=above:{\bf Hardware / Interfaces}] {};
-    \node[group, fill=red,
+    \node[group, fill=red, opacity=0.075,
     fit=(adc_isr)(timer_cb),
     label=above:{\bf ISRs / Callbacks}] {};
-    \node[group, fill=blue,
+    \node[group, fill=blue, opacity=0.075,
     fit=(audio_task)(line_task)(obs_task)(radio_task),
     label=above:{\bf Tasks}] {};
   \end{scope}
