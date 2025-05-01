@@ -18,13 +18,13 @@ Since the samples are no longer required after passing the window, using a \text
 Naively allocating the buffer length to be 4 times the number of samples in one window should work, but since it is given that the algorithm executes in about \texttt{8\,ms}--\texttt{12\,ms}, which is less than \texttt{32\,ms}, so it sufficies to keep the length of this buffer to be twice the number of samples in one window.
 The length required for such a buffer can then be calculated as \( 2 \times 8\,\cancel{\texttt{kHz}} \times 32\,\cancel{\texttt{ms}} = 512 \).
 
-We can see that this scenario is the classical case of the producer-consumer problem, so to synchronise between them, a semaphore can be used to signal the producer (the ADC) and the consumer (the black box algorithm).
+We can see that this scenario is the classical case of the producer-consumer problem, so to synchronise between them, a message queue can be used, where the buffer is set as described above, and message queue's semaphore can be used to signal the producer (the ADC) and the consumer (the black box algorithm).
 The producer will signal the semaphore when it has written a new sample to the buffer, and the consumer will wait on the semaphore until it has enough samples to process, which in this case is the number of samples in one window (256).
-
-To do so, initialise a binary semaphore to 0, and use a counting semaphore to keep track of the number of samples in the buffer.
 
 \subsubsection*{Ultrasonic echo measurements}
 
-Once a pulse is sent via a GPIO, the ultrasonic sensor listens for an appropriate edge/trigger of an incoming echo pulse on another GPIO.
+A timer callback periodically triggers the ultrasonic sensor to send out a pulse.
+When the echo pin goes high and the ISR starts a timer, and the system is not free to process other tasks.
+When the echo pin goes low upon receiving an incoming pulse, the interrupt handler stops the timer and calculates the time taken for the echo to return, and in turn the distance to the obstacle, if any, in a separate task.
 
 \subsubsection*{Transmission of debugging messages}
