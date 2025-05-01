@@ -78,8 +78,9 @@
 
   % ISR and callbacks
   \node (adc_isr) [isr, left=of mic] {\texttt{ADC ISR} (8 \texttt{kHz})};
-  \node (usonic_isr) [isr, below=1.5em of adc_isr] {\texttt{uSonic ISR}};
-  \node (timer_cb) [callback, below=1.5em of usonic_isr, yshift=0cm] {32\texttt{ms} Timer Callback};
+  \node (usonic_timer_cb) [callback, below=1.5em of adc_isr, yshift=0cm] {uSonic Timer Callback};
+  \node (usonic_isr) [isr, below=1.5em of usonic_timer_cb] {\texttt{uSonic ISR}};
+  \node (debug_timer_cb) [callback, below=6em of usonic_isr, yshift=0cm] {Debug Timer Callback};
 
   % Tasks
   \node (audio_task) [task, left=of adc_isr] {Voice Command Task};
@@ -90,7 +91,7 @@
   % Groups
   \begin{scope}[on background layer]
     \node[group, draw=black,
-    fit=(mic)(light)(ultra)(radio)(motor)(adc_isr)(timer_cb)(audio_task)(obs_task)(line_task)(radio_task),
+    fit=(mic)(light)(ultra)(radio)(motor)(adc_isr)(debug_timer_cb)(audio_task)(obs_task)(line_task)(radio_task),
     label=below:{\bf Autonomous robot system},
     xshift=-0.5cm, yshift=0.4cm,
     inner xsep=1cm, inner ysep=0.8cm] {};
@@ -99,7 +100,7 @@
     fit=(mic)(light)(ultra)(radio)(motor),
     label=above:{\bf Hardware / Interfaces}] {};
     \node[group, fill=red, opacity=0.075,
-    fit=(adc_isr)(timer_cb),
+    fit=(adc_isr)(debug_timer_cb),
     label=above:{\bf ISRs / Callbacks}] {};
     \node[group, fill=blue, opacity=0.075,
     fit=(audio_task)(line_task)(obs_task)(radio_task),
@@ -113,10 +114,12 @@
 
   \draw [arrow] (obs_task.south east) ++(-0.3,0) to[out=280, in=130] (motor.west);
   \draw [arrow] (line_task.south east) to[out=0, in=190] (motor.west);
-  \draw [arrow] (adc_isr.west) to (audio_task.east);
-  \draw [arrow] (usonic_isr.west) to[out=180, in=0] (obs_task.east);
-  \draw [arrow] (timer_cb.west) to[out=180, in=0] (audio_task.south east);
   \draw [arrow] (radio_task.east) to[out=0, in=180] (radio.west);
+
+  \draw [arrow] (adc_isr.west) to (audio_task.east);
+  \draw [arrow] (usonic_timer_cb.east) to[out=0, in=160] (ultra.north);
+  \draw [arrow] (usonic_isr.west) to[out=180, in=0] (obs_task.east);
+  \draw [arrow] (debug_timer_cb.west) to[out=180, in=0] (radio_task.north east);
 
   \draw [arrow] (audio_task.west) to[bend right=40] (radio_task.south west);
   \draw [arrow] (obs_task.west) to[bend right=35] (radio_task.west);
