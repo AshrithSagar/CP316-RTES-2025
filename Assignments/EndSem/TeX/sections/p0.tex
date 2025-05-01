@@ -45,12 +45,12 @@ The system runs on a microcontroller with an RTOS.\@
       \item On a valid voice command, the robot starts moving and follows the line using the light sensors.
             You don't need to implement the control algorithm for line-following; assume a black-box function is available that takes sensor input and returns motor duty cycles.
 
-      \item If an obstacle is detected within 30 cm, the robot stops and waits until the obstacle is cleared before resuming line-following.
+      \item If an obstacle is detected within \texttt{30\,cm}, the robot stops and waits until the obstacle is cleared before resuming line-following.
 
       \item The robot listens for voice commands through the microphone.
             A start word (such as ``go'') starts the robot, and a stop word (such as ``stop'') halts its operation and returns it to idle mode.
 
-      \item The microphone is connected to a 16-bit ADC that triggers an interrupt at 8 kHz sampling rate.
+      \item The microphone is connected to a \texttt{16}-bit ADC that triggers an interrupt at \texttt{8\,kHz} sampling rate.
 
       \item All tasks use the radio link for debugging.
             Debug messages can be printed into a buffer (\texttt{sprintf}) and then the buffer can be transmitted over the radio interface.
@@ -63,12 +63,12 @@ The system runs on a microcontroller with an RTOS.\@
 The algorithm checks for known words using a lightweight pattern-matching technique.
 
 \begin{itemize}[topsep=0pt]
-      \item The detection algorithm is implemented as a black-box function that takes in a window (buffer) of audio samples, updates its internal state, and returns a decision: index of the word detected, or -1 for detection in progress.
+      \item The detection algorithm is implemented as a black-box function that takes in a window (buffer) of audio samples, updates its internal state, and returns a decision: index of the word detected, or \texttt{-1} for detection in progress.
 
-      \item The algorithm runs window by window, where each window is of 32 ms duration.
+      \item The algorithm runs window by window, where each window is of \texttt{32\,ms} duration.
             Once a window is passed to the algorithm, its samples are no longer required and can be discarded or reused.
 
-      \item The algorithm takes about 8ms to 12ms to execute.
+      \item The algorithm takes about \texttt{8\,ms} to \texttt{12\,ms} to execute.
 
       \item The algorithm requires a minimum of 4 consecutive windows to make a decision.
 \end{itemize}

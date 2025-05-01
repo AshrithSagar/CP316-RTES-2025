@@ -30,17 +30,19 @@ Draw the data flows:
     \end{minipage}
     \hfill
     \begin{minipage}{0.49\linewidth}
-        Task priority order:
-        \begin{itemize}[noitemsep, topsep=0pt]
-            \item \texttt{AudioProc} task \( \to \) Highest priority
-            \item \texttt{Control} task \( \to \) Medium priority
-            \item \texttt{RadioTx} task \( \to \) Lowest priority
+        \subsubsection*{Task priority order}
+        \vspace*{-1em}
+        \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, parsep=0pt]
+            \item \texttt{VoiceCommand} task \( \to \) Highest
+            \item \texttt{ObstacleAvoidance} task \( \to \) High
+            \item \texttt{LineFollowing} task \( \to \) Medium
+            \item \texttt{Debugging} task \( \to \) Lowest
         \end{itemize}
 
-        \vspace*{1em}
-        Periodicity of the timer callbacks:
-        \begin{itemize}[noitemsep, topsep=0pt]
-            \item \texttt{ADC ISR} \( \to 8\,\texttt{kHz} \implies 125\,\mu\texttt{s} \)
+        \subsubsection*{Periodicity of the timer callbacks}
+        \vspace*{-1em}
+        \begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, parsep=0pt]
+            \item Windowing callback \( \to 32\,\texttt{ms} \)
         \end{itemize}
     \end{minipage}
 \end{figure*}

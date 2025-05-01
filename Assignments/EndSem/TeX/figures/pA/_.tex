@@ -13,6 +13,7 @@
     rectangle,
     rounded corners,
     minimum height=2.5em,
+    minimum width=2.5em,
     text centered,
     draw=black,
     fill=blue!15
@@ -21,6 +22,7 @@
     rectangle,
     rounded corners,
     minimum height=2.5em,
+    minimum width=2.5em,
     text centered,
     draw=black,
     fill=red!20
@@ -47,6 +49,7 @@
     rectangle,
     dashed,
     minimum height=2.5em,
+    minimum width=2.5em,
     text centered,
     draw=black,
     fill=orange!20,
@@ -140,13 +143,13 @@
 
   \node (legend) {\bf Legend};
 
-  \node[task, below=of legend] (task) {Task};
-  \node[right=of task] {Processing tasks};
+  \node[task, below=of legend] (task) {};
+  \node[right=of task] {Tasks};
 
-  \node[isr, below=0.5cm of task] (isr) {ISR};
+  \node[isr, below=0.5cm of task] (isr) {};
   \node[right=of isr] {Interrupt service routines};
 
-  \node[callback, below=0.5cm of isr] (cb) {Callback};
+  \node[callback, below=0.5cm of isr] (cb) {};
   \node[right=of cb] {Callbacks};
 
   \node[hw_in, below=0.5cm of cb] (hw_in) {In};
