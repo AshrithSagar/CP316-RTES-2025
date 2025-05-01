@@ -9,25 +9,18 @@ Describe synchronization mechanisms for the following:
 
 \subsection*{Solution}
 
-We employ RTOS primitives to coordinate hardware ISRs and tasks, ensuring data integrity and low latency.
+\subsubsection*{Acquisition of audio samples}
 
-\subsubsection*{Audio Sample Acquisition}
-\begin{itemize}
-    \item Producer (ADC ISR): Writes samples into the current ``prod'' buffer. After 256 samples, ISR swaps buffers under a brief critical section (interrupt-disable) to avoid race conditions, then gives \texttt{audioSem} (binary semaphore).
-    \item Consumer (AudioProc Task): Blocks on \texttt{xSemaphoreTake(audioSem)}, then safely reads the ``cons'' buffer, runs pattern-matching, and enqueues command codes.
-    \item Buffer Protection: Buffer indices toggled within ISR-disabled region (~<5\,µs) to guarantee atomicity.
-\end{itemize}
+The \texttt{16}-bit ADC fires interrupts at \( 32\,\texttt{kHz} \), which gives one sample per interrupt.
+The given black box voice command detection algorithm processes windows of \texttt{32\,ms} of these samples and writes them to a buffer.
+Once there is enough data in the buffer to process, the algorithm is able to make a decision, which in this case is given as requiring 4 consecutive windows.
+Since the samples are no longer required after passing the window, using a \textit{circular buffer} here to store the samples makes sense.
+Naively allocating the buffer length to be 4 times the number of samples in one window should work, but since it is given that the algorithm executes in about \texttt{8\,ms}--\texttt{12\,ms}, which is less than \texttt{32\,ms}, so it sufficies to keep the length of this buffer to be twice the number of samples in one window.
+The length required for such a buffer can then be calculated as \( 2 \times 8\,\cancel{\texttt{kHz}} \times 32\,\cancel{\texttt{ms}} = 512 \).
 
-\subsubsection*{Ultrasonic Echo Measurement}
-\begin{itemize}
-    \item Trigger (Timer Callback): Fires every 50\,ms, toggles trigger pin for 10\,µs pulse.
-    \item Echo ISR: On rising edge, stores \texttt{micros()}; on falling edge, computes duration, converts to distance (cm), then \texttt{xSemaphoreGiveFromISR(echoSem)}.
-    \item Control Task: Calls \texttt{xSemaphoreTake(echoSem, timeout)} to obtain latest distance reading without busy-waiting.
-\end{itemize}
+We can see that this scenario is the classical case of the producer-consumer problem, so to synchronise between them, a semaphore can be used to signal the producer (the ADC) and the consumer (the black box algorithm).
+The producer will signal the semaphore when it has written a new sample to the buffer, and the consumer will wait on the semaphore until it has enough samples to process, which in this case is the number of samples in one window.
 
-\subsubsection*{Debug Message Transmission}
-\begin{itemize}
-    \item Tasks format debug strings into an RTOS queue (\texttt{debugQueue}), which is inherently thread-safe.
-    \item RadioTx Task: Blocks on \texttt{xQueueReceive(debugQueue)}, dequeues messages, and calls \texttt{radioSend()}. Ensures ordered, non-blocking transmission.
-    \item Resource Guarding: \texttt{radioSend()} protected by driver-level mutex to handle DMA or UART conflicts.
-\end{itemize}
+\subsubsection*{Ultrasonic echo measurements}
+
+\subsubsection*{Transmission of debugging messages}
