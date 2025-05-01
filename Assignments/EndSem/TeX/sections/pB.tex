@@ -11,15 +11,12 @@ Describe synchronization mechanisms for the following:
 
 \subsubsection*{Acquisition of audio samples}
 
-The \texttt{16}-bit ADC fires interrupts at \( 32\,\texttt{kHz} \), which gives one sample per interrupt.
-The given black box voice command detection algorithm processes windows of \texttt{32\,ms} of these samples and writes them to a buffer.
-Once there is enough data in the buffer to process, the algorithm is able to make a decision, which in this case is given as requiring 4 consecutive windows.
-Since the samples are no longer required after passing the window, using a \textit{circular buffer} here to store the samples makes sense.
-Naively allocating the buffer length to be 4 times the number of samples in one window should work, but since it is given that the algorithm executes in about \texttt{8\,ms}--\texttt{12\,ms}, which is less than \texttt{32\,ms}, so it sufficies to keep the length of this buffer to be twice the number of samples in one window.
-The length required for such a buffer can then be calculated as \( 2 \times 8\,\cancel{\texttt{kHz}} \times 32\,\cancel{\texttt{ms}} = 512 \).
-
-We can see that this scenario is the classical case of the producer-consumer problem, so to synchronise between them, a message queue can be used, where the buffer is set as described above, and message queue's semaphore can be used to signal the producer (the ADC) and the consumer (the black box algorithm).
-The producer will signal the semaphore when it has written a new sample to the buffer, and the consumer will wait on the semaphore until it has enough samples to process, which in this case is the number of samples in one window (256).
+We can use a message queue to synchronise receiving the audio samples and processing them.
+A message queue effectively comprises a buffer and a semaphore.
+Initally, the buffer is empty, and the counting semaphore is set to zero.
+The 16-bit ADC fires interrupts at \( 8\,\texttt{kHz} \), after which a minimally blocking \texttt{ADC ISR} writes these samples to the buffer, and plays the role of the producer here.
+It signals the semaphore to indicate that a new sample has been written to the buffer.
+The consumer in this case is the black box voice command detection algorithm, which waits until there are enough samples in the buffer to process, which it knows by checking the semaphore.
 
 \subsubsection*{Ultrasonic echo measurements}
 
