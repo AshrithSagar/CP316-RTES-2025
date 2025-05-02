@@ -3,3 +3,16 @@
 Identify any shared resources and specify if they need protection.
 
 \subsection*{Solution}
+
+\begin{itemize}
+    \item
+          The audio sample buffers are a shared resource between the \texttt{ADC ISR} and the voice command detection task.
+          Since we are using a double buffering scheme, there is no need for any additional protection here since at a given time only one of them accesses either of the buffers.
+    \item
+          The timestamp values captured by the \texttt{uSonic ISR} are later used by the distance calculation task.
+          No additional protection is need here.
+    \item
+          The debug message queue is a shared resource among the multiple tasks that log debug messages as well as the single consumer task that sends these messages over the radio link.
+          The message queue implementation provided by the RTOS handles internal protection using semaphores, so no explicit protection is needed by the application here.
+          From an internal perspective, there is a need for protection to ensure that the queue is not accessed by multiple tasks at the same time.
+\end{itemize}
