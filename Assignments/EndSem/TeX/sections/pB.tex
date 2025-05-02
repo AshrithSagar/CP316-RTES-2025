@@ -11,17 +11,26 @@ Describe synchronization mechanisms for the following:
 
 \subsubsection*{Acquisition of audio samples}
 
-We can use a message queue to synchronise receiving the audio samples and processing them.
+We can use a message queue to synchronise receiving the audio samples and processing them, as the audio sample acquisition is a classic producer-consumer problem.
 A message queue effectively comprises a buffer and a semaphore.
 Initally, the buffer is empty, and the counting semaphore is set to zero.
 The 16-bit ADC fires interrupts at \( 8\,\texttt{kHz} \), after which a minimally blocking \texttt{ADC ISR} writes these samples to the buffer, and plays the role of the producer here.
 It signals the semaphore to indicate that a new sample has been written to the buffer.
 The consumer in this case is the black box voice command detection algorithm, which waits until there are enough samples in the buffer to process, which it knows by checking the semaphore.
+The producer adds in data to the buffer, while the consumer removes (and processes) them, and we ensure that both deal with full and empty buffers accordingly, i.e., the producer can't add more data to a full buffer, and the consumer can't remove data from an empty buffer.
 
 \subsubsection*{Ultrasonic echo measurements}
 
 A timer callback periodically triggers the ultrasonic sensor to send out a pulse.
-When the echo pin goes high and the ISR starts a timer, and the system is not free to process other tasks.
-When the echo pin goes low upon receiving an incoming pulse, the interrupt handler stops the timer and calculates the time taken for the echo to return, and in turn the distance to the obstacle, if any, in a separate task.
+The \texttt{uSonic ISR} deals with the rising and falling edges of the echo pin.
+When the echo pin goes high, the ISR starts a timer, and the system is now free to process other tasks.
+When the echo pin goes low upon receiving an incoming pulse, the ISR stops the timer and stores the time taken for the echo to return.
+Once this is done, the ISR can signal a binary semaphore to another task, in which we can then calculate the distance to the obstacle, if any, using the timing measurements.
+This task relies on the semaphore, and waits until the \texttt{ISR} signals it, thereby ensuring coordination between the ISR and the task.
 
 \subsubsection*{Transmission of debugging messages}
+
+For the debug link, we can use a message queue for the same reasons as above.
+Multiple tasks can send debug messages to the queue, and we can use a single task to read the queue and send these messages over the radio link.
+The tasks that writes to the queue act as the producers, while the task that reads and processes the messages and transmits them over radio acts as the consumer.
+In addition, we can use a mutex to ensure that only only task can write to the queue at a time, to prevent race conditions.
