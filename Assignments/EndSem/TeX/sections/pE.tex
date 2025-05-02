@@ -7,115 +7,128 @@ If you need any other functionality, assume a suitable API and state it clearly.
 
 \subsection*{Solution}
 
-\subsubsection*{ADC ISR:}
-\vspace*{-0.5em}
-\begin{lstlisting}[language=C]
-void ADC_IRQHandler(void) {
-    static uint16_t sampleIdx = 0;
-    audioBuf[prodIdx][sampleIdx++] = analogRead();
-    if (sampleIdx >= AUDIO_WINDOW_SAMPLES) {
-        sampleIdx = 0;
-        // atomic swap
-        __disable_irq();
-        swapBuffers();
-        __enable_irq();
-        xSemaphoreGiveFromISR(audioSem, NULL);
+\subsubsection*{Assumed APIs}
+\begin{itemize}[noitemsep, topsep=0pt]
+    \item \texttt{analogRead\@()} – For reading from microphone ADC
+    \item \texttt{digitalRead\@(pin)} – For light sensors, ultrasonic sensor's echo pin
+    \item \texttt{digitalWrite\@(pin, value)} – For the trigger pin control
+    \item \texttt{micros\@()} – Microsecond timer
+    \item \texttt{delayMicroseconds\@(us)} – A short blocking delay; input in microseconds
+    \item \texttt{setMotorSpeeds\@(l, r)} – Set motor PWM values, for left and right motors
+    \item \texttt{getMotorSpeeds\@(sensors[], \&l, \&r)} – Black-box control algorithm
+    \item \texttt{detectCommand\@(buffer)} – Voice detection black-box
+    \item \texttt{radioSend\@(buffer)} – Send buffer over radio
+\end{itemize}
+
+\subsubsection*{ADC ISR}
+\begin{verbatim}
+void ADC_ISR() {
+    static int sample_index = 0;
+    audio_buffer[current_buffer][sample_index++] = analogRead();
+
+    if (sample_index >= 256) {
+        sample_index = 0;
+        swapBuffers();  // Switch current and processing buffer
+        xSemaphoreGive(audio_window_ready_sem);
     }
 }
-\end{lstlisting}
+\end{verbatim}
 
-\vspace*{-1em}
-\subsubsection*{Timer Callback (Ultrasonic Trigger):}
-\vspace*{-0.5em}
-\begin{lstlisting}[language=C]
-void UltrasonicTimerCallback(void) {
-    digitalWrite(ULTRIG_PIN, HIGH);
+\newpage
+\subsubsection*{VoiceCommand Task}
+\begin{verbatim}
+void VoiceCommandTask(void *params) {
+    while (1) {
+        xSemaphoreTake(audio_window_ready_sem, portMAX_DELAY);
+        
+        int result = detectCommand(processing_buffer);
+        if (result == START_COMMAND) {
+            robot_state = MOVING;
+        } else if (result == STOP_COMMAND) {
+            robot_state = IDLE;
+            stopMotors();
+        }
+
+        sprintf(debug_msg, "Command result: %d\n", result);
+        xQueueSend(debug_queue, debug_msg, 0);
+    }
+}
+\end{verbatim}
+
+\subsubsection*{Ultrasonic Timer Callback}
+\begin{verbatim}
+void UltrasonicTimerCallback() {
+    digitalWrite(TRIGGER_PIN, HIGH);
     delayMicroseconds(10);
-    digitalWrite(ULTRIG_PIN, LOW);
+    digitalWrite(TRIGGER_PIN, LOW);
 }
-\end{lstlisting}
+\end{verbatim}
 
 \newpage
-\subsubsection*{Echo ISR:}
-\vspace*{-0.5em}
-\begin{lstlisting}[language=C]
-void EXTI_ECHO_IRQHandler(void) {
-    static uint32_t startTime;
-    if (digitalRead(ECHOPIN)) {
-        startTime = micros();       // rising edge
+\subsubsection*{Ultrasonic ISR (Echo Timing)}
+\begin{verbatim}
+void UltrasonicEchoISR() {
+    static uint32_t start_time = 0;
+
+    if (digitalRead(ECHO_PIN) == HIGH) {
+        start_time = micros();
     } else {
-        uint32_t duration = micros() - startTime;
-        distanceCm = duration / 58; // convert to cm
-        xSemaphoreGiveFromISR(echoSem, NULL);
+        echo_duration = micros() - start_time;
+        xSemaphoreGive(distance_ready_sem);
     }
 }
-\end{lstlisting}
+\end{verbatim}
 
-\vspace*{-1em}
-\subsubsection*{AudioProc Task:}
-\vspace*{-0.5em}
-\begin{lstlisting}[language=C]
-void AudioProcTask(void *pvParameters) {
-    int16_t window[AUDIO_WINDOW_SAMPLES];
-    for (;;) {
-        xSemaphoreTake(audioSem, portMAX_DELAY);
-        memcpy(window, audioBuf[consIdx], sizeof(window));
-        int wordId = detectWord(window);
-        if (wordId >= 0) xQueueSend(cmdQueue, &wordId, 0);
-    }
-}
-\end{lstlisting}
+\subsubsection*{ObstacleAvoidance Task}
+\begin{verbatim}
+void ObstacleAvoidanceTask(void *params) {
+    while (1) {
+        xSemaphoreTake(distance_ready_sem, portMAX_DELAY);
+        float distance = echo_duration * 0.034 / 2;
 
-\vspace*{-1em}
-\subsubsection*{RadioTx Task:}
-\vspace*{-0.5em}
-\begin{lstlisting}[language=C]
-void RadioTxTask(void *pvParameters) {
-    char msg[80];
-    for (;;) {
-        xQueueReceive(debugQueue, msg, portMAX_DELAY);
-        radioSend((uint8_t*)msg, strlen(msg));
-    }
-}
-\end{lstlisting}
-
-\newpage
-\subsubsection*{Control Task:}
-\vspace*{-0.5em}
-\begin{lstlisting}[language=C]
-void ControlTask(void *pvParameters) {
-    enum State {IDLE, FOLLOW, STOPPED} state = IDLE;
-    int cmd;
-    for (;;) {
-        // process voice commands
-        if (xQueueReceive(cmdQueue, &cmd, 0) == pdPASS) {
-            if (cmd == WORD_GO && state == IDLE) state = FOLLOW;
-            else if (cmd == WORD_STOP) {
-                state = IDLE;
-                setMotorDuty(0,0);
-            }
+        if (distance < 30.0 && robot_state == MOVING) {
+            stopMotors();
+            robot_state = WAITING_FOR_CLEAR;
+        } else if (distance >= 30.0 && robot_state == WAITING_FOR_CLEAR) {
+            robot_state = MOVING;
         }
-        // obstacle detection
-        if (state == FOLLOW) {
-            if (xSemaphoreTake(echoSem, 0) == pdPASS) {
-                if (distanceCm < 30) state = STOPPED;
-            }
-            if (state == FOLLOW) {
-                int duties[2];
-                blackBoxLineFollow(digitalReadSensors(), duties);
-                setMotorDuty(duties[0], duties[1]);
-            }
-        } else if (state == STOPPED) {
-            setMotorDuty(0,0);
-            if (xSemaphoreTake(echoSem, portMAX_DELAY) == pdPASS && distanceCm >= 30) {
-                state = FOLLOW;
-            }
-        }
-        // send debug info
-        char dbg[80];
-        sprintf(dbg, "State=%d Dist=%d\r\n", state, distanceCm);
-        xQueueSend(debugQueue, dbg, 0);
-        vTaskDelay(pdMS_TO_TICKS(10));
+
+        sprintf(debug_msg, "Distance: %.2f cm\n", distance);
+        xQueueSend(debug_queue, debug_msg, 0);
     }
 }
-\end{lstlisting}
+\end{verbatim}
+
+\subsubsection*{LineFollowing Task}
+\begin{verbatim}
+void LineFollowingTask(void *params) {
+    while (1) {
+        if (robot_state == MOVING) {
+            int sensors[8];
+            for (int i = 0; i < 8; ++i) {
+                sensors[i] = digitalRead(light_sensor_pins[i]);
+            }
+
+            getMotorSpeeds(sensors, &left_speed, &right_speed);
+            setMotorSpeeds(left_speed, right_speed);
+
+            sprintf(debug_msg, "Motors: L=%d R=%d\n", left_speed, right_speed);
+            xQueueSend(debug_queue, debug_msg, 0);
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(32));
+    }
+}
+\end{verbatim}
+
+\subsubsection*{Debugging Task}
+\begin{verbatim}
+void DebugTask(void *params) {
+    char msg[DEBUG_MSG_LEN];
+    while (1) {
+        if (xQueueReceive(debug_queue, msg, portMAX_DELAY)) {
+            radioSend(msg);
+        }
+    }
+}
+\end{verbatim}
