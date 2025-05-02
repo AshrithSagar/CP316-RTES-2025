@@ -13,18 +13,18 @@ Describe synchronization mechanisms for the following:
 
 This is a classic producer-consumer problem, where the producer is the \texttt{ADC ISR} that acquires the audio samples, and the consumer is the black box voice command detection algorithm that processes these samples.
 The 16-bit ADC fires interrupts at \( 8\,\texttt{kHz} \), after which a minimally blocking \texttt{ADC ISR} writes these samples to a shared buffer.
-Once enough samples for a window are available, the \texttt{ISR} can then use a semaphore to signal the processing task that a window is ready.
+Once a full window is available, the \texttt{ISR} can then use a semaphore to signal the processing task that a window is ready.
 The producer adds in data to the buffer, while the consumer removes (and processes) them, and we ensure that both deal with full and empty buffers accordingly, i.e., the producer can't add more data to a full buffer, and the consumer can't remove data from an empty buffer.
 
 \subsubsection*{Ultrasonic echo measurements}
 
 A timer callback periodically triggers the trigger pin of the ultrasonic sensor to send out a pulse by keeping it high for a short duration.
-The \texttt{uSonic ISR} deals with the rising and falling edges of the ultrasonic sensor's echo pin.
-When the echo pin goes high, the ISR records the timestamp and signals a task for duration measurement.
-When the echo pin goes low upon receiving an incoming pulse, the ISR stores the time taken for the echo to return, and the duration measurement task can now calculate the distance to the obstacle accordingly.
+The \texttt{uSonic ISR} records the timestamp of the rising and falling edges  of the ultrasonic sensor's echo pin.
+After receiving the falling edge, the \texttt{ISR} signals a task using a semaphore to perform the distance calculation accordingly.
+Recording the timestamps is time-critical, as is done in the \texttt{ISR}, while the distance calculation task takes lower priority, and this way of structuring allows for a small footprint in the \texttt{ISR}, while the distance calculation is offloaded to another task.
 
 \subsubsection*{Transmission of debugging messages}
 
 For the debug link, we can use a message queue to synchronise multiple producer tasks with a single consumer task.
 Each of the producer tasks can enqueue the debug messages to the message queue, and the consumer task can dequeue these messages and send them over the radio link periodically.
-The message queue implementation uses a semaphore to ensure that the producer tasks can add messages to the queue only when there is space available, and the consumer task can dequeue messages only when there are messages in the queue.
+The \texttt{RTOS} message queue implementation internally handles blocking and synchronization, so the producer tasks can block if the queue is full, and the consumer task can block if the queue is empty.
