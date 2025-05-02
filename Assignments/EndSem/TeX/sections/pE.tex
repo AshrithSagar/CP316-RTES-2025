@@ -28,7 +28,7 @@ void ADC_ISR() {
 
     if (sample_index >= 256) {
         sample_index = 0;
-        swapBuffers();  // Switch current and processing buffer
+        swapBuffers();  // TODO: Don't block ISR
         xSemaphoreGive(audio_window_ready_sem);
     }
 }
