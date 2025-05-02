@@ -4,9 +4,12 @@ Define the memory management scheme for the audio buffers, using statically or d
 
 \subsection*{Solution}
 
-The \texttt{16}-bit ADC fires interrupts at \( 8\,\texttt{kHz} \), which gives one sample per interrupt.
-The given black box voice command detection algorithm processes windows of \texttt{32\,ms} of these samples and writes them to a buffer.
-Once there is enough data in the buffer to process, the algorithm is able to make a decision, which in this case is given as requiring 4 consecutive windows.
-Since the samples are no longer required after passing the window, using a \textit{circular buffer} here to store the samples makes sense.
-Naively allocating the buffer length to be 4 times the number of samples in one window should work, but since it is given that the algorithm executes in about \texttt{8\,ms}--\texttt{12\,ms}, which is less than \texttt{32\,ms}, so it sufficies to keep the length of this buffer to be twice the number of samples in one window.
-The length required for such a buffer can then be calculated as \( 2 \times 8\,\cancel{\texttt{kHz}} \times 32\,\cancel{\texttt{ms}} = 512 \).
+We can use a statically allocated buffer since it's simpler to implement here.
+In addition, we go with a double buffering scheme.
+The \texttt{ADC ISR} writes the incoming samples to one buffer while the voice command detection algorithm processes the other buffer.
+Once a full window of samples are available, the \texttt{ISR} can signal a semaphore to notify the processing task, after which the processing task can swap the buffers and start processing the new buffer while the \texttt{ISR} continues to fill the other buffer.
+We just need a double buffer here, since the processing time of the detection algorithm, given that it takes about \texttt{8\,ms} to \texttt{12\,ms} to execute, is less than the time taken to fill a buffer of \texttt{32\,ms} duration.
+
+The sizes required for the buffers can be calculated as follows:
+The \texttt{ADC} samples at \( 8\,\texttt{kHz} \) for \( 32\,\texttt{ms} \), so the number of samples per window is \( 8\,\texttt{kHz} \times 32\,\texttt{ms} \), i.e., 256 samples per window.
+With each sample being \( 16\,\texttt{bits} \implies 2\,\texttt{bytes} \), the size needed for each buffer is then \( 256 \times 2 = 512\,\texttt{bytes} \), thereby the total size of the two buffers would be \( 512 \times 2 = 1024\,\texttt{bytes} \).
