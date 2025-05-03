@@ -3,16 +3,16 @@
  *  1. Select high frequency clock source using external crystal
  *  2. Enable FPU
  */
-#define IOREG32(addr) (*((volatile unsigned long *) (addr)))
+#define IOREG32(addr) (*((volatile unsigned long *)(addr)))
 
 /* CoProcessor Access Control Register to enable FPU */
-#define CPACR       IOREG32(0xE000ED88UL)
+#define CPACR IOREG32(0xE000ED88UL)
 
 /* Register to select high frequency external crystal */
-#define CLK_HFCLKSTART      IOREG32(0x40000000UL)
-#define CLK_HFCLKSTARTED    IOREG32(0x40000100UL)
+#define CLK_HFCLKSTART IOREG32(0x40000000UL)
+#define CLK_HFCLKSTARTED IOREG32(0x40000100UL)
 
-#define __SYSTEM_CLOCK_64M  (64000000UL)
+#define __SYSTEM_CLOCK_64M (64000000UL)
 
 /* We can use SystemCoreClock variable in other modules to find clock value */
 unsigned long SystemCoreClock;
@@ -29,18 +29,15 @@ unsigned long SystemCoreClock;
  * accurate peripheral clocks such as for uart baud rate.
  */
 
-static void SystemCoreClockUpdate(void)
-{
+static void SystemCoreClockUpdate(void) {
     CLK_HFCLKSTART = 1;
-    while (!CLK_HFCLKSTARTED)
-        ;
+    while (!CLK_HFCLKSTARTED);
     SystemCoreClock = __SYSTEM_CLOCK_64M;
 }
 
-void SystemInit(void)
-{
+void SystemInit(void) {
     /* Enable the FPU, by activating coprocessors CP10 and CP11 */
-              /* CP10 */    /* CP11 */
+    /* CP10 */ /* CP11 */
     CPACR |= (3UL << 20) | (3UL << 22);
 
     SystemCoreClockUpdate();

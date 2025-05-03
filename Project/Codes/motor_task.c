@@ -1,16 +1,16 @@
 #include <stdint.h>
-#include "microbit.h"
-#include "bsp.h"
-#include "bsp2.h"
-#include "cmsis_os2.h"
+
+#include "bsp/bsp.h"
+#include "bsp/microbit.h"
+#include "bsp2/bsp2.h"
+#include "rtx/cmsis_os2.h"
 
 #define M1A P0
 #define M1B P1
 #define M2A P2
 #define M2B P16
 
-int motor_task(void)
-{
+int motor_task(void) {
     uart_puts("hello, motors!\n");
     audio_sweep(100, 8000, 200);
 
@@ -37,11 +37,12 @@ int motor_task(void)
     osDelay(1000);
     motor_off();
 
-    audio_sweep(100, 8000, 200); osDelay(100);
-    audio_sweep(100, 8000, 200); osDelay(100);
+    audio_sweep(100, 8000, 200);
+    osDelay(100);
+    audio_sweep(100, 8000, 200);
+    osDelay(100);
 
-    while (1)
-    {
+    while (1) {
 #if 0
         int16_t xyz[3], max = 0, maxmax = 0;
 
