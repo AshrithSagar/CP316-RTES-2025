@@ -14,12 +14,11 @@
 #define CLK_HFCLKSTARTED IOREG32(0x40000100UL)
 
 void system_init(void) {
-  /* Enable high accuracy clock */
-  CLK_HFCLKSTART = 1;
-  while (CLK_HFCLKSTARTED == 0)
-    ;
+    /* Enable high accuracy clock */
+    CLK_HFCLKSTART = 1;
+    while (CLK_HFCLKSTARTED == 0);
 
-  /* Enable the FPU, by activating coprocessors CP10 and CP11 */
-  CPACR |= (3UL << 20) | (3UL << 22);
-  /* CP10 */ /* CP11 */
+    /* Enable the FPU, by activating coprocessors CP10 and CP11 */
+    CPACR |= (3UL << 20) | (3UL << 22);
+    /* CP10 */ /* CP11 */
 }

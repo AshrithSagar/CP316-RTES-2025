@@ -38,7 +38,7 @@ arm-none-eabi-gcc -c $CFLAGS timer.c
 # Link the object code to form exectuable program
 echo Linking
 arm-none-eabi-ld -T bare.ld -Map tiny.map \
-startup.o system.o "${2%.c}.o" ledbtn.o uart.o printf.o timer.o $LIBS -o tiny.out
+    startup.o system.o "${2%.c}.o" ledbtn.o uart.o printf.o timer.o $LIBS -o tiny.out
 
 # Check sizes
 arm-none-eabi-size tiny.out
