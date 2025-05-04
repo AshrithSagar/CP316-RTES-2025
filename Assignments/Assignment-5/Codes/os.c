@@ -1,7 +1,7 @@
 #include "os.h"
 
 #define STACK_SIZE 128
-#define NUM_TASKS 3
+#define NUM_TASKS 4
 
 long task_sp[NUM_TASKS];  // Stack pointers for tasks
 long task_stack[NUM_TASKS][STACK_SIZE];

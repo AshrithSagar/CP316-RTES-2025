@@ -15,17 +15,13 @@ static inline void led_blink_with_delay(int r, int c, int delay_ms) {
     }
 }
 
-void task1(void) {
-    led_blink_with_delay(0, 0, 500);  // Top-left LED
-}
+void task1(void) { led_blink_with_delay(0, 0, 125); }
 
-void task2(void) {
-    led_blink_with_delay(2, 2, 500);  // Center LED
-}
+void task2(void) { led_blink_with_delay(1, 1, 125); }
 
-void task3(void) {
-    led_blink_with_delay(4, 4, 500);  // Bottom-right LED
-}
+void task3(void) { led_blink_with_delay(2, 2, 125); }
+
+void task4(void) { led_blink_with_delay(3, 3, 125); }
 
 int main(void) {
     FPCCR &= ~(1 << 30);
@@ -33,6 +29,7 @@ int main(void) {
     task_create(task1);
     task_create(task2);
     task_create(task3);
+    task_create(task4);
 
     RVR = (64000000 / 1000) * 1000;  // 1 second
     CSR = 7;                         // Internal clock; Tick int, Enable
