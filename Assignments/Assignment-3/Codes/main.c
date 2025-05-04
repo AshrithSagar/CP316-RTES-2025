@@ -20,7 +20,7 @@ int main() {
 
     bsp_init();
 
-    printf("[START] Game of Catch!\n[INFO] Score: %d\n", score);
+    printf("\n[START] Game of Catch!\n[INFO] Score: %d\n", score);
     audio_sweep(500, 2000, 100);
     timer_start(0, 5, led_row_refresh);
 
@@ -60,8 +60,10 @@ int main() {
             // Reset ball position
             ball_r = 0;
             ball_c = get_random_byte() % LED_NUM_COLS;
+            printf("[INFO] Ball missed! Score: %d\n", score);
+            printf("[INFO] New ball in column %d\n", ball_c);
         } else if (ball_r == catch_r && ball_c == catch_c) {
-            // Collision detection
+            // Collision detected
             audio_sweep(500, 2000, 250);
             if (ball_speed < 50)
                 ball_speed = 50;  // Minimum speed
@@ -71,6 +73,7 @@ int main() {
             ball_r = 0;
             ball_c = get_random_byte() % LED_NUM_COLS;
             printf("[INFO] Catch successful! Score: %d\n", ++score);
+            printf("[INFO] New ball in column %d\n", ball_c);
         }
     }
 
