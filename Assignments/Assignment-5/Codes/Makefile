@@ -48,7 +48,7 @@ ifeq ($(IS_WSL),1) # WSL
 else # Native Linux
 	@if [ -d "$(FLASHDIR)" ]; then \
 		/bin/cp $(TARGET).hex "$(FLASHDIR)"; \
-		echo "Flashed to MICROBIT"; \
+		echo "Flashed to $(TARGET)"; \
 	else \
 		echo "Flash failed: Mount not found at $(FLASHDIR)"; \
 	fi
@@ -56,7 +56,7 @@ endif
 else ifeq ($(UNAME_S),Darwin) # macOS
 	@if [ -d "$(FLASHDIR)" ]; then \
 		/bin/cp $(TARGET).hex "$(FLASHDIR)"; \
-		echo "Flashed to MICROBIT"; \
+		echo "Flashed to $(TARGET)"; \
 	else \
 		echo "Flash failed: Mount not found at $(FLASHDIR)"; \
 	fi
