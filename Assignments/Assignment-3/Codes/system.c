@@ -30,16 +30,15 @@ unsigned long SystemCoreClock;
  */
 
 static void SystemCoreClockUpdate(void) {
-  CLK_HFCLKSTART = 1;
-  while (!CLK_HFCLKSTARTED)
-    ;
-  SystemCoreClock = __SYSTEM_CLOCK_64M;
+    CLK_HFCLKSTART = 1;
+    while (!CLK_HFCLKSTARTED);
+    SystemCoreClock = __SYSTEM_CLOCK_64M;
 }
 
 void SystemInit(void) {
-  /* Enable the FPU, by activating coprocessors CP10 and CP11 */
-  /* CP10 */ /* CP11 */
-  CPACR |= (3UL << 20) | (3UL << 22);
+    /* Enable the FPU, by activating coprocessors CP10 and CP11 */
+    /* CP10 */ /* CP11 */
+    CPACR |= (3UL << 20) | (3UL << 22);
 
-  SystemCoreClockUpdate();
+    SystemCoreClockUpdate();
 }
