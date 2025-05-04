@@ -12,7 +12,7 @@ Explain the objective and functionality of \texttt{led\_row\_refresh} function.
 
 The \texttt{led\_row\_refresh\@()} routine is responsible for refreshing the LED display.
 Each time it is called, it clears the pixels of the previous row and sets the pixels of the current row.
-It is called every \texttt{5\,\texttt{ms}} by the \texttt{SysTick\_Handler} interrupt service routine (ISR).
+It is called every \texttt{5\,\texttt{ms}} by the \texttt{SysTick\_Handler} interrupt service routine (ISR), which is how we've configured it here, by specifying the \texttt{CVR}, \texttt{RVR}, and \texttt{CSR} registers of the \texttt{SysTick} timer, and to generate an interrupt every \texttt{5\,\texttt{ms}} when the timer overflows.
 With 5 rows in the display, once cycle of iteration through the display takes \( 5 \times 5 = \) \texttt{25\,\texttt{ms}} \( \implies \frac{1000}{25} = 40\,\texttt{Hz} \) refresh rate, which is sufficient for the human eye to perceive the display as continuous without flickering.
 
 When the display needs to be refreshed, i.e., as and when the timer interrupt occurs, the control shifts to the \texttt{SysTick\_Handler} ISR due to this interrupt, which happens at a hardware level.
