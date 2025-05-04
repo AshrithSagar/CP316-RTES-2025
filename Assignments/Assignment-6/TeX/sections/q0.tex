@@ -1,1 +1,17 @@
 \section*{Porting RTX}
+
+The \texttt{CMSIS} (Cortex Microcontroller Software Interface Standard) framework is set of APIs, software components and tools designed to simplify and standardise software development for the \texttt{ARM Cortex-A/M} microcontrollers.
+Among many others, it includes the \texttt{CMSIS-RTOS2} API, which is a standard interface for real-time operating systems (RTOS) and provides a consistent way to interact with different RTOS implementations.
+The default RTOS implementation for \texttt{CMSIS-RTOS2} is \texttt{RTX5}, which designed for \texttt{ARM Cortex-M} microcontrollers.
+It is a lightweight RTOS implementation that supports features such as preemptive multitasking, inter-thread communication, and memory management, to name a few.
+
+Porting \texttt{RTX5} to the \texttt{BBC micro:bit}
+\begin{itemize}[noitemsep, topsep=0pt]
+    \item Cloning the \texttt{RTX5} repository from \texttt{GitHub} and setting up the development environment as mentioned in the docs.
+    \item Configuring it to support \texttt{BBC micro:bit}.
+    \item Integrating it with existing \texttt{BSP} code.
+    \item Using the API to create and manage threads, start timers, and using them in some application level code.
+\end{itemize}
+
+Overall, this exercise provided an opportunity and exposure to learn a bit about how software development is done in a collaborative setting, and how to integrate existing code written by the community into a new project.
+Moving forward, this gave a nice glimpse on the considerations that need to be accounted when porting an RTOS to a new platform (maybe some other board or an other RTOS implementation in the future), and how to approach this task in a systematic way.
