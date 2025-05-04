@@ -11,7 +11,7 @@ void app_main(void *arg) {
     int f;
     osTimerId_t timer_id;
 
-    osTimerNew(led_callback, osTimerPeriodic, NULL, NULL);
+    timer_id = osTimerNew(led_callback, osTimerPeriodic, NULL, NULL);
     osTimerStart(timer_id, 5);
 
     frame_buffer[4][2] = 1;
