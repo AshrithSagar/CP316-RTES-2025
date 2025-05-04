@@ -3,6 +3,7 @@
 
 volatile int n, prev_n;
 volatile int r0, c0;
+
 uint8_t get_random_byte() {
     NRF_RNG->EVENTS_VALRDY = 0;
     NRF_RNG->TASKS_START = 1;

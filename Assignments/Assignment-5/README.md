@@ -6,4 +6,4 @@ Round robin scheduler
 tar xvf
 ```
 
-Details in README.
+Details in [README](Files/README.md).
