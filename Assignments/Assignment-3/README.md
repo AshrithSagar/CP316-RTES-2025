@@ -6,4 +6,4 @@ Untar the file by:
 tar xvfz ex3-poll.tgz
 ```
 
-Instructions in README.
+Instructions in [README](Files/README.md).
