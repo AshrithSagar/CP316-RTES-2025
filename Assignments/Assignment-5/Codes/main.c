@@ -2,14 +2,14 @@
 #include "os.h"
 
 #define FPCCR (*(volatile long*)0xE000EF34)
-#define CVR (*(volatile long*)0xE000E010)
-#define CSR (*(volatile long*)0xE000E014)
-#define RVR (*(volatile long*)0xE000E018)
+#define CSR (*(volatile long*)0xE000E010)
+#define RVR (*(volatile long*)0xE000E014)
+#define CVR (*(volatile long*)0xE000E018)
 
 void task1(void) {
     int count = 0;
     while (1) {
-        printf("Task 1: %d\n", count++);
+        printf("\t\t\t\tTask 1: %d\n", count++);
     }
 }
 
@@ -24,6 +24,6 @@ int main(void) {
     CSR = 7;                       // Internal clock; Tick int, Enable
 
     while (1) {
-        printf("Main: %d\n", count++);
+        printf("Task 0: %d\n", count++);
     }
 }
