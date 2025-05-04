@@ -1,40 +1,33 @@
 #include "bsp/bsp.h"
 
 int main() {
-    int r, c;
-    int f;
+    int audio_freq = 1000;
+    int ball_r = 0, ball_c = 0;
+    int catch_r = 4, catch_c = 2;
 
     bsp_init();
 
-    uart_puts("hello, world!\n");
+    uart_puts("[START] Game of Catch!\n");
     audio_sweep(500, 2000, 100);
     timer_start(0, 5, led_row_refresh);
 
-    frame_buffer[4][2] = 1;
-
-    c = 0;
-    r = 0;
-    f = 1000;
     while (1) {
-        frame_buffer[4][2] = 1;
+        frame_buffer[catch_r][catch_c] = 1;
 
         if (button_get(0)) audio_sweep(500, 2000, 200);
 
         if (button_get(1)) audio_sweep(2000, 500, 200);
 
-        frame_buffer[r][c] = 1;
+        frame_buffer[ball_r][ball_c] = 1;
         timer_delay(200);
-#if 0  // can get annoying during debugging
-        audio_beep(f, 20);
-#endif
-        frame_buffer[r][c] = 0;
+        frame_buffer[ball_r][ball_c] = 0;
 
-        r++;
-        f *= 1.1;
-        if (r == LED_NUM_ROWS) {
-            f = 1000;
-            r = 0;
-            c = (c + 1) % LED_NUM_COLS;
+        ball_r++;
+        audio_freq *= 1.1;
+        if (ball_r == LED_NUM_ROWS) {
+            audio_freq = 1000;
+            ball_r = 0;
+            ball_c = (ball_c + 1) % LED_NUM_COLS;
         }
     }
 
