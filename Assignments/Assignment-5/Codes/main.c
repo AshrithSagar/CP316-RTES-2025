@@ -15,13 +15,13 @@ static inline void led_blink_with_delay(int r, int c, int delay_ms) {
     }
 }
 
-void task1(void) { led_blink_with_delay(0, 0, 125); }
+void task1(void) { led_blink_with_delay(1, 1, 125); }
 
-void task2(void) { led_blink_with_delay(1, 1, 125); }
+void task2(void) { led_blink_with_delay(2, 2, 125); }
 
-void task3(void) { led_blink_with_delay(2, 2, 125); }
+void task3(void) { led_blink_with_delay(3, 3, 125); }
 
-void task4(void) { led_blink_with_delay(3, 3, 125); }
+void task4(void) { led_blink_with_delay(4, 4, 125); }
 
 int main(void) {
     FPCCR &= ~(1 << 30);

@@ -49,7 +49,7 @@ static inline void led_off(int r, int c) {
 }
 
 static inline void delay(volatile int n) {
-    n *= 6400;
+    n *= 64000000 / 1000;  // 1ms delay
     while (n > 0) n--;
 }
 
