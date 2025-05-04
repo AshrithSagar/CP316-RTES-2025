@@ -14,11 +14,14 @@ brew install --cask gcc-arm-embedded
 
 Or alternatively, download the toolchain from [ARM's website](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads).
 
-## Makefile
+## Makefiles
 
-Flashing to the BBC `micro:bit v2` board
+The following version of `flash` takes into considerations the platform as well.
+Just running `make` will build and flash to the `BBC micro:bit v2` board.
 
 ```make
+TARGET = MICROBIT
+
 #########################################
 # Auto detect platform and flash
 # To override the default FLASHDIR, use: `make flash FLASHDIR=/path/to/flash`
