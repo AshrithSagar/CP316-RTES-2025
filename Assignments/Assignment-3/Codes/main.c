@@ -1,4 +1,16 @@
 #include "bsp/bsp.h"
+#include "bsp/nrf52833.h"
+
+uint8_t get_random_byte() {
+    NRF_RNG->EVENTS_VALRDY = 0;
+    NRF_RNG->TASKS_START = 1;
+
+    while (NRF_RNG->EVENTS_VALRDY == 0);  // Wait
+
+    uint8_t value = NRF_RNG->VALUE;
+    NRF_RNG->TASKS_STOP = 1;
+    return value;
+}
 
 int main() {
     int audio_freq = 1000;
@@ -47,17 +59,17 @@ int main() {
             audio_freq = 1000;
             // Reset ball position
             ball_r = 0;
-            ball_c = (ball_c + 1) % LED_NUM_COLS;
+            ball_c = get_random_byte() % LED_NUM_COLS;
         } else if (ball_r == catch_r && ball_c == catch_c) {
             // Collision detection
-            audio_sweep(500, 2000, 50);
+            audio_sweep(500, 2000, 250);
             if (ball_speed < 50)
                 ball_speed = 50;  // Minimum speed
             else
                 ball_speed -= 10;  // Increase speed
             // Reset ball position
             ball_r = 0;
-            ball_c = (ball_c + 1) % LED_NUM_COLS;
+            ball_c = get_random_byte() % LED_NUM_COLS;
             printf("[INFO] Catch successful! Score: %d\n", ++score);
         }
     }
