@@ -7,6 +7,17 @@
 volatile uint32_t start = 0, end = 0, elapsed = 0;
 volatile int button_state = 0;  // 0: Released, 1: Pressed, 2: Stopped
 
+#define ROWS 5
+#define COLS 5
+volatile int current_r = 0, current_c = 0;
+volatile int framebuffer[ROWS][COLS] = {
+    {1, 0, 1, 0, 1},
+    {0, 1, 0, 1, 0},
+    {1, 0, 1, 0, 1},
+    {0, 1, 0, 1, 0},
+    {1, 0, 1, 0, 1},
+};
+
 void stopwatch() {
     static uint32_t last_press_time = 0;
 
@@ -37,6 +48,23 @@ void print_stopwatch() {
     }
 }
 
+void display_refresh() {
+    // Turn off previous LED
+    led_off(current_r, current_c);
+
+    // Move to next LED
+    current_c++;
+    if (current_c >= COLS) {
+        current_c = 0;
+        current_r = (current_r + 1) % ROWS;
+    }
+
+    // Turn on next LED if it's set in framebuffer
+    if (framebuffer[current_r][current_c]) {
+        led_on(current_r, current_c);
+    }
+}
+
 int main() {
     uart_init(UART_RX, UART_TX);
     timer_init();
@@ -48,6 +76,15 @@ int main() {
 
     timer_start(1, 100, print_stopwatch);
     // Print every 100ms
+
+    timer_start(2, 1, display_refresh);
+    // Refresh display every 1ms
+    // 1-2ms worked while testing. Anything greater than 3ms had more flicker,
+    // and anything greater than 5ms was not persistent enough.
+    // Toggling the LEDs every 1ms => 25ms for the entire display
+    // => 40Hz refresh rate, which is good enough for the
+    // human eye to be persistent.
+    // 2ms would give 20Hz, which is almost close to the ~16Hz human threshold.
 
     return 0;
 }
