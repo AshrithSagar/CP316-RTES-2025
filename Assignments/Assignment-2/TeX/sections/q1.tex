@@ -17,6 +17,32 @@ You may experiment with different loop sizes, multiple characters and mutliple s
 
 \subsubsection*{Part 1a}
 
+We make use of two timers here, one to measure the function overhead, which overflows every \texttt{1\,ms}, and one to show the averages over UART, which overflows every \texttt{1000\,ms}.
+At the core of the \texttt{measure\@()} function, we use a \texttt{delay\_ms\@(1)} with argument \texttt{1} to measure the time taken for a single loop iteration.
+The timestamps are handled by reading the \texttt{CVR} register of the SysTick timer, accordingly.
+
+A sample from the log displayed:
+\begin{verbatim}
+Function call overhead: Average: 6 microseconds, across 1000 iterations
+Loop overhead: Average: 95.98 microseconds, across 1000 iterations
+Clock cycles per iteration: 6147 clock cycles
+\end{verbatim}
+
 \subsubsection*{Part 1b}
 
+Similarly, to find the time spent to transmit one character, we configure the timers same as above, but the core is changed to use \texttt{uart\_putc(' ');} transmitting a single space character.
+
+Sample log:
+\begin{verbatim}
+Average: 83.44 microseconds, across 1000 iterations
+\end{verbatim}
+
 \subsubsection*{Part 1c}
+
+To measure the average human reaction time, here we now use three timers, one to turn the LED on every \texttt{1000\,ms}, and run a reaction listener every \texttt{1\,ms}, and one to show the averages over UART, which overflows every \texttt{10000\,ms}.
+
+A sample from the log displayed:
+\begin{verbatim}
+Average: 0.10 microseconds, across 10 iterations
+\end{verbatim}
+which doesn't seem right, the fix of which I wasn't able to find.
