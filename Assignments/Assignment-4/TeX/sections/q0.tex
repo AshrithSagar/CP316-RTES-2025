@@ -5,4 +5,38 @@ Also refer to the switch interfacing circuit in the schematics.
 
 Explain the sequence from the button-press till interrupt handler returns and main code resumes.
 
-\subsubsection*{Solution}
+\vspace*{-2em}
+\subsection*{Solution}
+
+GPIOTE stands for General Purpose Input/Output Tasks and Events, which is a module for providing functionality for accessing the tasks and events of the GPIO pins.
+It can be used to generate events when the state of a GPIO pin changes as well as to control the state of GPIO pins.
+
+Here, we use it to detect the button press and accordingly toggle an LED, by enabling interrupts for the falling edge event for \texttt{BUTTON\_0}.
+GPIOTE has 8 registers, each which can be configured for some event (number) \( i \) [\( i \to 0 \text{ to } 7 \)] along with the pin number to track and event type [rising edge / falling edge / any change] associated with the event.
+The \texttt{GPIOTE\_INTENSET} register holds the interrupt enable bits for each of these events, which we have to set the corresponding bit to 1 to enable the interrupt for that event.
+Corresponding to each event is a \texttt{GPIOTE\_CONFIG} register, which holds the configuration for that event, which we configure as follows (Figure~\ref{fig:gpiote-config}):
+\begin{itemize}[noitemsep, topsep=0pt]
+    \item The mode is set to \texttt{Event} mode, by writing \texttt{01} in the \texttt{MODE} field, i.e., in the \texttt{AA} bits.
+          This allows the pin specified in \texttt{PSEL} to be configured as an input and an input event is generated whenever the edge type operation occurs in the pin.
+
+    \item The pin number is set in the \texttt{PSEL} field, i.e., in the \texttt{BBBBB} bits.
+          \texttt{BUTTON\_0} is connected to pin 14, so we set \texttt{01110} here.
+
+    \item The edge type is set in the \texttt{POLARITY} field, i.e., in the \texttt{C} bit.
+          For falling edge detection, we set it to 2, i.e., as \texttt{10}.
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/q0/_}
+    \vspace*{-3.5em}
+    \caption{
+        \texttt{GPIOTE\_CONFIG} register for a GPIOTE event.
+    }\label{fig:gpiote-config}
+\end{figure}
+
+Additionally, we have to enable GPIOTE interrupts in the interrupt controller by setting the \texttt{GPIOTE} bit (\texttt{bit-6}) in the \texttt{NVIC\_ISER} register.
+
+Once the button is pressed, the falling edge event is detected for it, and an interrupt is generated, changing the execution flow to the interrupt handler.
+The execution flow now calls the corresponding callback function, which in this case is the \texttt{button0\_press} function, which toggles the LED state accordingly.
+Once this is done, the interrupt handler returns, and the main code resumes execution from where it was interrupted.
