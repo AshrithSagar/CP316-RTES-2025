@@ -7,7 +7,6 @@
 #include "microbit.h"  // IWYU pragma: export
 #include "printf.h"    // IWYU pragma: export
 #include "pwm.h"       // IWYU pragma: export
-#include "timer.h"     // IWYU pragma: export
 #include "uart.h"      // IWYU pragma: export
 
 void bsp_init(void);

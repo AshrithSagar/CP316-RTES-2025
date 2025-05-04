@@ -4,10 +4,10 @@
 
     .text
     .thumb_func
-    .global SVC_Handler
+    .global SysTick_Handler
     .balign 2
 
-SVC_Handler:
+SysTick_Handler:
     // Save software context (R4-R11)
     push {r4-r11}
 
