@@ -6,4 +6,4 @@ Unzip the tar:
 tar xvfz ex4-int.tgz
 ```
 
-Instructions in README.
+Instructions in [README](Files/README.md).

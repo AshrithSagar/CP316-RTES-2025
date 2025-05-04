@@ -1,7 +1,18 @@
 #include "bsp/bsp.h"
+#include "bsp/nrf52833.h"
 
 volatile int n, prev_n;
 volatile int r0, c0;
+uint8_t get_random_byte() {
+    NRF_RNG->EVENTS_VALRDY = 0;
+    NRF_RNG->TASKS_START = 1;
+
+    while (NRF_RNG->EVENTS_VALRDY == 0);  // Wait
+
+    uint8_t value = NRF_RNG->VALUE;
+    NRF_RNG->TASKS_STOP = 1;
+    return value;
+}
 
 #define DEBOUNCE_TIME 20  // ms
 
