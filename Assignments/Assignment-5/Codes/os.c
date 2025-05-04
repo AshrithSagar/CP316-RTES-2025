@@ -1,13 +1,16 @@
 #include "os.h"
 
-long task_sp[2];  // one for main, one for the second task
-
 #define STACK_SIZE 128
-long task_stack[STACK_SIZE];
+#define NUM_TASKS 3
+
+long task_sp[NUM_TASKS];  // Stack pointers for tasks
+long task_stack[NUM_TASKS][STACK_SIZE];
 int cur_tid = 0;
 
 void task_create(taskfn_t entry) {
-    long *sp = &task_stack[STACK_SIZE];  // just outside the stack memory
+    long *sp = &task_stack[cur_tid][STACK_SIZE];
+    // Top of the stack for the task
+    // Just outside the stack memory
 
     // Prepare hardware context frame
     *(--sp) = 0x21000000;   // xPSR (default state, interrupts enabled)
@@ -22,7 +25,6 @@ void task_create(taskfn_t entry) {
     // Prepare software context (R4-R11) manually
     for (int i = 4; i <= 11; i++) *(--sp) = 0;
 
-    task_sp[1] = (long)sp;  // Save stack pointer for the task
+    task_sp[cur_tid] = (long)sp;  // Save stack pointer for the task
+    cur_tid++;
 }
-
-void task_yield(void) { __asm("svc 0"); }

@@ -85,6 +85,5 @@ clean:
 
 startup.o: startup.c
 system.o: system.c
-main.o: main.c bsp/bsp.h bsp/audio.h bsp/gpio.h bsp/ledbtn.h \
- bsp/microbit.h bsp/printf.h bsp/pwm.h bsp/uart.h os.h
+main.o: main.c bsp/myled.h os.h
 os.o: os.c os.h
