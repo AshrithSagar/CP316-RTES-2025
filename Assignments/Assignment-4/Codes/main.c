@@ -4,8 +4,9 @@
 #define DEBOUNCE_TIME 20  // ms
 
 // Global variables
-volatile int button0_count, prev_button0_count;
 volatile int catch_r, catch_c;
+volatile int button0_count, prev_button0_count;
+volatile uint32_t button0_last_press_time = 0;
 
 uint8_t get_random_byte() {
     NRF_RNG->EVENTS_VALRDY = 0;
@@ -19,6 +20,11 @@ uint8_t get_random_byte() {
 }
 
 void button0_press(void) {
+    uint32_t now = timer_now_ms();
+    if ((now - button0_last_press_time) < DEBOUNCE_TIME)
+        return;  // Ignore if pressed too soon
+    button0_last_press_time = now;
+
     frame_buffer[catch_r][catch_c] = 0;
     catch_c = (catch_c - 1 + LED_NUM_COLS) % LED_NUM_COLS;  // Move left
     frame_buffer[catch_r][catch_c] = 1;
@@ -28,7 +34,7 @@ void button0_press(void) {
 int main() {
     // Local variables
     int audio_freq = 1000;
-    int ball_speed = 200, score = 0;
+    int ball_speed = 250, score = 0;
     int ball_r, ball_c;
     int button1_count;
 
@@ -87,8 +93,8 @@ int main() {
         } else if (ball_r == catch_r && ball_c == catch_c) {
             // Collision detected
             audio_sweep(500, 2000, 250);
-            if (ball_speed < 50)
-                ball_speed = 50;  // Minimum speed
+            if (ball_speed < 100)
+                ball_speed = 100;  // Minimum speed
             else
                 ball_speed -= 10;  // Increase speed
             // Reset ball position

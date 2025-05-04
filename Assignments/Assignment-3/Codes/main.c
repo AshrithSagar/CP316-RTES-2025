@@ -16,7 +16,7 @@ int main() {
     int audio_freq = 1000;
     int ball_r = 0, ball_c = 0;
     int catch_r = 4, catch_c = 2;
-    int ball_speed = 200, score = 0;
+    int ball_speed = 250, score = 0;
 
     bsp_init();
 
@@ -65,8 +65,8 @@ int main() {
         } else if (ball_r == catch_r && ball_c == catch_c) {
             // Collision detected
             audio_sweep(500, 2000, 250);
-            if (ball_speed < 50)
-                ball_speed = 50;  // Minimum speed
+            if (ball_speed < 100)
+                ball_speed = 100;  // Minimum speed
             else
                 ball_speed -= 10;  // Increase speed
             // Reset ball position

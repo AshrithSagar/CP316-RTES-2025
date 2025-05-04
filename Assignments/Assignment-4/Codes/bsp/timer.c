@@ -13,58 +13,58 @@ volatile uint32_t timer_ticks;
 typedef void (*pfn)(void);
 
 struct {
-  uint32_t count;
-  uint32_t reload;
-  pfn callback;
+    uint32_t count;
+    uint32_t reload;
+    pfn callback;
 } timers[NUM_TIMERS];
 
 void SysTick_Handler(void) {
-  int n;
+    int n;
 
-  timer_ticks++;
+    timer_ticks++;
 
-  for (n = 0; n < NUM_TIMERS; n++) {
-    if (timers[n].reload != 0) // timer is active
-    {
-      timers[n].count--;
-      if (timers[n].count == 0) {
-        timers[n].count = timers[n].reload;
-        timers[n].callback();
-      }
+    for (n = 0; n < NUM_TIMERS; n++) {
+        if (timers[n].reload != 0)  // timer is active
+        {
+            timers[n].count--;
+            if (timers[n].count == 0) {
+                timers[n].count = timers[n].reload;
+                timers[n].callback();
+            }
+        }
     }
-  }
 }
 
 /* 1 millisecond counter value for 64MHz processor clock */
 #define TICKS_1MS (64000000L / 1000)
 
 void timer_init() {
-  int n;
+    int n;
 
-  /* set all timers to inactive */
-  for (n = 0; n < NUM_TIMERS; n++)
-    timers[n].reload = 0; // inactive
+    /* set all timers to inactive */
+    for (n = 0; n < NUM_TIMERS; n++) timers[n].reload = 0;  // inactive
 
-  /* enable systick */
-  SYSTICK_RVR = TICKS_1MS;
-  SYSTICK_CSR = 7; // clock source internal, interrupts enabled
+    /* enable systick */
+    SYSTICK_RVR = TICKS_1MS;
+    SYSTICK_CSR = 7;  // clock source internal, interrupts enabled
 
-  timer_ticks = 0;
+    timer_ticks = 0;
 }
 
 void timer_start(uint32_t n, uint32_t reload_value, pfn_t callback) {
-  timers[n].reload = reload_value;
-  timers[n].count = reload_value;
-  timers[n].callback = callback;
+    timers[n].reload = reload_value;
+    timers[n].count = reload_value;
+    timers[n].callback = callback;
 }
 
 void timer_stop(uint32_t n) { timers[n].reload = 0; }
 
 void timer_delay(uint32_t millis) {
-  uint32_t start = timer_ticks;
+    uint32_t start = timer_ticks;
 
-  while ((timer_ticks - start) < millis)
-    ;
+    while ((timer_ticks - start) < millis);
 
-  return;
+    return;
 }
+
+uint32_t timer_now_ms(void) { return timer_ticks; }
