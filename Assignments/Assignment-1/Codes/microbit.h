@@ -28,20 +28,20 @@
 #define BUTTONS_ACTIVE_STATE 0
 
 /* UART */
-#define UART_RX 40 // P1_08
-#define UART_TX 6  // P0_06
+#define UART_RX 40  // P1_08
+#define UART_TX 6   // P0_06
 
 /* I2C */
-#define I2C_SCL 8  // P0_08
-#define I2C_SDA 16 // P0_16
+#define I2C_SCL 8   // P0_08
+#define I2C_SDA 16  // P0_16
 
 /* On-board speaker and mic */
-#define SPEAKER 0 // P0_00
-#define MIC                                                                    \
-  3                // AIN3 on P0_05
-                   //  (we need to specify analog input channel,
-                   //   and not the pin number)
-#define RUN_MIC 20 // P0_20
+#define SPEAKER 0  // P0_00
+#define MIC \
+    3               // AIN3 on P0_05
+                    //  (we need to specify analog input channel,
+                    //   and not the pin number)
+#define RUN_MIC 20  // P0_20
 
 /* Edge connector pins */
 #define P0 2
