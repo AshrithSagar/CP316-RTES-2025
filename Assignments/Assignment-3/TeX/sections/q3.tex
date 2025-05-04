@@ -4,3 +4,8 @@ What is the worst-case response time for the button-press inputs in your program
 What does it depend on?
 
 \subsubsection*{Solution}
+
+We can calculate the worst-case response time for the button-press inputs in the program by estimating the rough time it takes, in the worst case, for the \texttt{while\@(1)} loop to execute.
+The major parts here are the \texttt{timer\_delay\@()} calls to keep the LED display persistant, which takes about \texttt{50\,\texttt{ms}} for the catch and roughly about \texttt{100\,\texttt{ms}}--\texttt{250\,\texttt{ms}} for the ball, amounting roughly to about \texttt{300\,\texttt{ms}} in worst case.
+This response time is dependent on the way this display persistance is implemented, which in this case is done in a busy-wait fashion, thereby giving a worse response time than if it were done using interrupts.
+In the busy-wait case, the processor is busy waiting for the timer to expire; doing redundant tasks in the meanwhile, which affects the response time negatively.
