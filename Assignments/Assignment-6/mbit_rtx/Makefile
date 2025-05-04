@@ -27,16 +27,48 @@ LIBS += $(GCCARM)/lib/gcc/arm-none-eabi/14.2.1/thumb/v7e-m+fp/hard/libgcc.a
 
 LDFLAGS = -T $(LINKER_SCRIPT) -Map system.map --entry Reset_Handler
 
-flash: $(TARGET).hex
-	# Usage: make flash MOUNT_POINT=/dev/diskX
-	ifndef MOUNT_POINT
-	$(error MOUNT_POINT is not set. Usage: make flash MOUNT_POINT=/dev/diskX)
+#########################################
+# Auto detect platform and flash
+# To override the default FLASHDIR, use: `make flash FLASHDIR=/path/to/flash`
+
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+	IS_WSL := $(shell grep -qi microsoft /proc/version 2>/dev/null && echo 1 || echo 0)
+	ifeq ($(IS_WSL),1) # WSL
+		FLASHDIR ?= /mnt/c/Temp
+	else # Native Linux
+		FLASHDIR ?= /mnt/$(TARGET)
 	endif
-	FLASHDIR=/Volumes/$(TARGET)
-	sudo mkdir -p "${FLASHDIR}"
-	sudo mount -t msdos $(MOUNT_POINT) "${FLASHDIR}"
-	sudo /bin/cp $(TARGET).hex "${FLASHDIR}"
-	diskutil unmount "${FLASHDIR}"
+else ifeq ($(UNAME_S),Darwin) # macOS
+	FLASHDIR ?= /Volumes/$(TARGET)
+endif
+
+flash: $(TARGET).hex
+ifeq ($(UNAME_S),Linux)
+ifeq ($(IS_WSL),1) # WSL
+	/bin/cp $(TARGET).hex "$(FLASHDIR)"
+	(cd "$(FLASHDIR)" && cmd.exe /c copy $(TARGET).hex E:)
+else # Native Linux
+	@if [ -d "$(FLASHDIR)" ]; then \
+		/bin/cp $(TARGET).hex "$(FLASHDIR)"; \
+		echo "Flashed to MICROBIT"; \
+	else \
+		echo "Flash failed: Mount not found at $(FLASHDIR)"; \
+	fi
+endif
+else ifeq ($(UNAME_S),Darwin) # macOS
+	@if [ -d "$(FLASHDIR)" ]; then \
+		/bin/cp $(TARGET).hex "$(FLASHDIR)"; \
+		echo "Flashed to MICROBIT"; \
+	else \
+		echo "Flash failed: Mount not found at $(FLASHDIR)"; \
+	fi
+else # Fallback
+	@echo "Unknown platform: $(UNAME_S)"
+	@exit 1
+endif
+
+#########################################
 
 $(TARGET).hex: $(TARGET).out
 	$(OBJCOPY) -O ihex $< $@
@@ -58,4 +90,5 @@ clean::
 
 startup.o: startup.c
 system.o: system.c
-main.o: main.c bsp/bsp.h rtx/cmsis_os2.h
+main.o: main.c bsp/bsp.h bsp/adc.h bsp/audio.h bsp/gpio.h bsp/ledbtn.h \
+ bsp/microbit.h bsp/printf.h bsp/pwm.h bsp/uart.h rtx/cmsis_os2.h
