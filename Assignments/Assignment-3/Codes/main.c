@@ -12,11 +12,23 @@ int main() {
     timer_start(0, 5, led_row_refresh);
 
     while (1) {
+        // Clear the previous position of the catch
+        for (int c = 0; c < LED_NUM_COLS; c++) {
+            frame_buffer[catch_r][c] = 0;
+        }
+        // Update the catch position based on button presses
+        if (button_get(0)) {
+            catch_c = (catch_c - 1 + LED_NUM_COLS) % LED_NUM_COLS;  // Move left
+            frame_buffer[catch_r][catch_c] = 1;
+            audio_sweep(500, 2000, 50);
+        }
+        if (button_get(1)) {
+            catch_c = (catch_c + 1) % LED_NUM_COLS;  // Move right
+            frame_buffer[catch_r][catch_c] = 1;
+            audio_sweep(2000, 500, 50);
+        }
         frame_buffer[catch_r][catch_c] = 1;
-
-        if (button_get(0)) audio_sweep(500, 2000, 200);
-
-        if (button_get(1)) audio_sweep(2000, 500, 200);
+        timer_delay(50);
 
         frame_buffer[ball_r][ball_c] = 1;
         timer_delay(200);
