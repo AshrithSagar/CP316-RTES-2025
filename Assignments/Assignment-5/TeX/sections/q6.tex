@@ -6,4 +6,5 @@ Explain \texttt{task\_create} code.
 
 The function \texttt{task\_create} initializes a new stack for the created task.
 It prepares the hardware context frame to mimic what the CPU expects on an exception.
-It manually saves registers \texttt{R4} to \texttt{R11} and stores the stack pointer in \texttt{task\_sp[1]} for future use.
+Here, we initialise each of the entries corresponding to the appropriate registers in the context frame, and finally save the stack pointer for the task.
+In the current implementation, all the entries are set to zero, except for the \texttt{xPSR} and \texttt{SP} entries, which are set to \hex{0x21000000} (default state, enabling interrupts) and the stack pointer respectively.
