@@ -6,27 +6,13 @@ void led_callback(void *arg) {
     led_row_refresh();
 }
 
-void app_main(void *arg) {
-    int r, c;
-    int f;
-    osTimerId_t timer_id;
-
-    timer_id = osTimerNew(led_callback, osTimerPeriodic, NULL, NULL);
-    osTimerStart(timer_id, 5);
-
+void thread_led(void *arg) {
+    int r = 0, c = 0, f = 1000;
     frame_buffer[4][2] = 1;
 
-    c = 0;
-    r = 0;
-    f = 1000;
     while (1) {
-        if (button_get(0)) audio_sweep(500, 2000, 200);
-
-        if (button_get(1)) audio_sweep(2000, 500, 200);
-
         frame_buffer[r][c] = 1;
         osDelay(200);
-        // audio_beep(f, 20);
         frame_buffer[r][c] = 0;
 
         r++;
@@ -38,9 +24,34 @@ void app_main(void *arg) {
     }
 }
 
+void thread_button(void *arg) {
+    while (1) {
+        if (button_get(0)) audio_sweep(500, 2000, 200);
+        if (button_get(1)) audio_sweep(2000, 500, 200);
+        osDelay(100);
+    }
+}
+
+void thread_debug(void *arg) {
+    while (1) {
+        uart_puts("[DEBUG] This part runs in an other thread!\n");
+        osDelay(1000);
+    }
+}
+
+void app_main(void *arg) {
+    osTimerId_t timer_id;
+    timer_id = osTimerNew(led_callback, osTimerPeriodic, NULL, NULL);
+    osTimerStart(timer_id, 5);
+
+    osThreadNew(thread_led, NULL, NULL);
+    osThreadNew(thread_button, NULL, NULL);
+    osThreadNew(thread_debug, NULL, NULL);
+}
+
 int main(void) {
     bsp_init();
-    uart_puts("hello, world!\n");
+    uart_puts("[START] Hello world!\n");
     audio_sweep(500, 2000, 100);
 
     osKernelInitialize();
