@@ -1,41 +1,30 @@
-#include "bsp/bsp.h"
+#include "bsp/myled.h"
 #include "os.h"
 
+#define FPCCR (*(volatile long*)0xE000EF34)
+
 void task1(void) {
+    led_on(2, 2);
+    delay(1000);
     while (1) {
-        led_on(0, 0);
-        led_off(0, 1);
-        led_off(0, 2);
         task_yield();
-    }
-}
-
-void task2(void) {
-    while (1) {
-        led_on(0, 1);
-        led_off(0, 2);
-        led_off(0, 0);
-        task_yield();
-    }
-}
-
-void task3(void) {
-    while (1) {
-        led_on(0, 2);
-        led_off(0, 0);
-        led_off(0, 1);
-        task_yield();
+        led_on(4, 4);
+        delay(1000);
     }
 }
 
 int main(void) {
-    leds_init();
+    led_on(0, 0);
+    delay(1000);
+    FPCCR &= ~(1 << 30);
 
     task_create(task1);
-    task_create(task2);
-    task_create(task3);
+    led_on(1, 1);
+    delay(1000);
 
     while (1) {
         task_yield();
+        led_on(3, 3);
+        delay(1000);
     }
 }

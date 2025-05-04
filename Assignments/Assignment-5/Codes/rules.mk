@@ -25,7 +25,7 @@ SFLAGS += -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16
 	$(CC) -S $(CFLAGS) $< -o $@
 
 .s.o:   # assemble
-	$(CC) -c $(SFLAGS) $< -o $@
+	$(AS) -c $(SFLAGS) $< -o $@
 
 depend: # generate dependencies
 	@$(CC) -MM $(CFLAGS) $(SRC)

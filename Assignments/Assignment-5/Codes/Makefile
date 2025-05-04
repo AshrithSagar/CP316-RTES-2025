@@ -1,7 +1,9 @@
 TARGET = MICROBIT
 
 SRC = startup.c system.c main.c os.c
+ASM = syscall.s
 OBJ = $(subst .c,.o,$(SRC))
+OBJ += $(subst .s,.o,$(ASM))
 CFLAGS = -I bsp # library include path
 LINKER_SCRIPT = nrf52833.ld        # linker command script
 
@@ -83,5 +85,5 @@ clean:
 
 startup.o: startup.c
 system.o: system.c
-main.o: main.c bsp/bsp.h bsp/audio.h bsp/gpio.h bsp/ledbtn.h \
- bsp/microbit.h bsp/printf.h bsp/pwm.h bsp/timer.h bsp/uart.h os.h
+main.o: main.c bsp/myled.h os.h
+os.o: os.c os.h
