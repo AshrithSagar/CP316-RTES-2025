@@ -1,4 +1,4 @@
-    .equ NUM_TASKS, 3
+    .equ NUM_TASKS, 2
 
     .syntax unified
 
