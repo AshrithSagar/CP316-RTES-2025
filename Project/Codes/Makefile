@@ -90,8 +90,8 @@ clean::
 
 .PHONY: all flash clean
 
-startup.o: startup.c #Vector table and crt initialization
-system.o: system.c #clock initialization
+startup.o: startup.c  # Vector table and CRT initialization
+system.o: system.c  # Clock initialization
 main.o: main.c bsp/bsp.h bsp/adc.h bsp/audio.h bsp/gpio.h bsp/ledbtn.h \
  bsp/microbit.h bsp/printf.h bsp/pwm.h bsp/uart.h rtx/cmsis_os2.h
 motor_task.o: motor_task.c bsp/bsp.h bsp/adc.h bsp/audio.h bsp/gpio.h \
