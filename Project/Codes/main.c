@@ -98,6 +98,7 @@ void task3(void *arg) {
             else
                 osThreadSuspend(tid1);
 
+            printf("[TASK3] Toggle1: %d\n", toggle1);
             toggle1 = !toggle1;
         }
 
@@ -110,6 +111,7 @@ void task3(void *arg) {
             else
                 osThreadSuspend(tid2);
 
+            printf("[TASK3] Toggle2: %d\n", toggle2);
             toggle2 = !toggle2;
         }
     }
