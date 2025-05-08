@@ -2,11 +2,13 @@
 
 CP316: Real-time Embedded Systems, IISc
 
+Project repo: <https://github.com/R55555/CP316-RTES-Project>
+
 ## Toolchain installation
 
-For linux, see [README.md](./Assignments/Assignment-1/files/README.md) in Assignment-1.
+For Linux, see Assignment-1's [README](./Assignments/Assignment-1/files/README.md).
 
-For macOS, instead of `brew install arm-none-eabi-gcc`, use
+For macOS (using [brew](https://brew.sh/)), instead of `brew install arm-none-eabi-gcc`, use
 
 ```shell
 brew install --cask gcc-arm-embedded
